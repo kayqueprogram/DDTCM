@@ -5,7 +5,7 @@
 	<!-- HTML -->
 	<meta charset="UTF-8" />
 	<meta name="description"
-		content="Seja bem vindo(a) ao nosso site de traduções! Conheça o Doki Doki Translate Club Memorial" />
+		content="Seja bem vindo(a) ao nosso site de traduções! Conheçaa o Doki Doki Translate Club Memorial" />
 	<meta name="keywords"
 		content="doki doki translate company, games, game, jogos, jogo, tradução, traduções, traducao, traducoes, ddtc, Doki Doki Translate Company, Doki Doki Literature Club, DDLC, MAS, mas" />
 	<meta name="author" content="Drack" />
@@ -14,7 +14,7 @@
 	<!-- OG -->
 	<meta property="og:title" content="Doki Doki Translate Club Memorial" />
 	<meta property="og:description"
-		content="Seja bem vindo(a) ao nosso site de traduções! Conheça o Doki Doki Translate Club Memorial" />
+		content="Seja bem vindo(a) ao nosso site de traduções! Conheçaa o Doki Doki Translate Club Memorial" />
 	<meta property="og:type" content="video.movie" />
 	<meta property="og:url" content="https://ddtcmw.vercel.app/index.html" />
 	<meta property="og:image"
@@ -23,7 +23,7 @@
 	<meta name="twitter:card" content="summary_large_image" />
 	<meta name="twitter:title" content="Doki Doki Translate Club Memorial" />
 	<meta name="twitter:description"
-		content="Seja bem vindo(a) ao nosso site de traduções! Conheça o Doki Doki Translate Club Memorial" />
+		content="Seja bem vindo(a) ao nosso site de traduções! Conheçaa o Doki Doki Translate Club Memorial" />
 	<meta name="twitter:site" content="Doki Doki Translate Club Memorial" />
 	<meta name="twitter:creator" content="Drack" />
 	<meta name="twitter:image"
@@ -65,7 +65,8 @@
 				<div class="col-lg-2">
 					<div class="header__logo">
 						<a href="./index.html">
-							<img src="" alt="" />
+							<img class="header__brand-icon" src="css/favicon/favicon_io/android-chrome-192x192.png" alt="Doki Doki Translate Club" />
+							<span class="header__brand">DDTC</span>
 						</a>
 					</div>
 				</div>
@@ -100,8 +101,15 @@
 					<div class="row">
 						<div class="col-lg-6">
 							<div class="hero__text">
-								<div class="label">Seja-bem vindo!</div>
+								<div class="label">Seja bem-vindo!</div>
 								<h2>A Doki Doki Translate Club Memorial</h2>
+								<p class="hero__lead">
+									Um acervo organizado para encontrar traduções, mods e projetos de DDLC em português.
+								</p>
+								<div class="hero__actions">
+									<a href="./jogos/lista.html" class="primary-btn"><span>Ver lista de mods</span><i class="arrow_right"></i></a>
+									<a href="./Mods/Aviso.html" class="primary-btn primary-btn--ghost"><span>Ler aviso</span><i class="arrow_right"></i></a>
+								</div>
 								<p>
 									esse site é apenas para organizar traduções de DDLC.
 								</p>
@@ -115,8 +123,8 @@
 							<div class="hero__text">
 								<div class="label">Aproveitem</div>
 								<h2>Espero que seja o que queriam.</h2>
-								<p2>
-									A pedidos estou trazendo novamente traduções da nossa antiga equipe.
+								<p>
+									A pedidos, reunimos novamente traduções da nossa antiga equipe.
 								</p>
 							</div>
 						</div>
@@ -129,7 +137,7 @@
 								<div class="label">Explore!</div>
 								<h2>Sinta-se à vontade</h2>
 								<p>
-									Caso sinta falta de algumas traduções, foram removidas devido pura babaquice de terceiros.
+									Navegue pelos favoritos da comunidade e pelos projetos adicionados recentemente.
 								</p>
 							</div>
 						</div>
@@ -141,8 +149,8 @@
 							<div class="hero__text">
 								<div class="label">Futuro!</div>
 								<h2>Teremos mais traduções de DDLC?</h2>
-								<p2>
-									Bem improvável, apenas se decidir finalizar meus projetos.
+								<p>
+									O memorial segue como uma forma simples de preservar e organizar o que já foi lançado.
 								</p>
 							</div>
 						</div>
@@ -153,16 +161,43 @@
 	</section>
 	<!-- Hero Section End -->
 
+	<section class="overview">
+		<div class="container">
+			<div class="overview__grid">
+				<a href="./jogos/lista.html" class="overview__item">
+					<span class="icon_grid-2x2"></span>
+					<strong>Lista completa</strong>
+					<p>Encontre visual novels, mods e traduções reunidos em um só lugar.</p>
+				</a>
+				<a href="#favoritos" class="overview__item">
+					<span class="icon_heart"></span>
+					<strong>Favoritos</strong>
+					<p>Comece pelos projetos mais lembrados pela comunidade.</p>
+				</a>
+				<a href="#recentes" class="overview__item">
+					<span class="icon_clock_alt"></span>
+					<strong>Recentes</strong>
+					<p>Veja os mods que entraram por último no memorial.</p>
+				</a>
+			</div>
+		</div>
+	</section>
+
 	<!-- Product Section Begin -->
 	<section class="product spad">
 		<div class="container">
 			<div class="row">
 				<div class="col-lg-8">
-					<div class="trending__product">
+					<div class="trending__product" id="favoritos">
 						<div class="row">
 							<div class="col-lg-8 col-md-8 col-sm-8">
 								<div class="section-title">
 									<h4>Os mods favoritos da comunidade!</h4>
+								</div>
+							</div>
+							<div class="col-lg-4 col-md-4 col-sm-4">
+								<div class="btn__all">
+									<a href="./jogos/lista.html" class="primary-btn">Ver todos <span class="arrow_right"></span></a>
 								</div>
 							</div>
 						</div>
@@ -318,7 +353,7 @@
 							</div>
 						</div>
 					</div>
-					<div class="recent__product">
+					<div class="recent__product" id="recentes">
 						<div class="row">
 							<div class="col-lg-8 col-md-8 col-sm-8">
 								<div class="section-title">
@@ -329,7 +364,7 @@
 						<div class="row">
 							<div class="col-lg-4 col-md-6 col-sm-6">
 								<div class="product__item">
-									<div class="product__item__pic set-bg" data-setbg="../lista/img/withcnat.jpg"></div>
+									<div class="product__item__pic set-bg" data-setbg="./lista/img/withcnat.jpg"></div>
 									<div class="product__item__text">
 										<ul>
 											<li>Romance</li>
@@ -343,21 +378,21 @@
 							</div>
 							<div class="col-lg-4 col-md-6 col-sm-6">
 								<div class="product__item">
-									<div class="product__item__pic set-bg" data-setbg="../lista/img/Sayori_Date.jpg"></div>
+									<div class="product__item__pic set-bg" data-setbg="./lista/img/Sayori_Date.jpg"></div>
 									<div class="product__item__text">
 										<ul>
 											<li>Suspense</li>
 											<li>Comédia</li>
 										</ul>
 										<h5>
-											<a href="./Mods/Sayori Date.html"" target="_blank">Date Sayori</a>
+											<a href="./Mods/Sayori Date.html" target="_blank">Date Sayori</a>
 										</h5>
 									</div>
 								</div>
 							</div>
 							<div class="col-lg-4 col-md-6 col-sm-6">
 								<div class="product__item">
-									<div class="product__item__pic set-bg" data-setbg="../lista/img/DeathS.png"></div>
+									<div class="product__item__pic set-bg" data-setbg="./lista/img/DeathS.png"></div>
 									<div class="product__item__text">
 										<ul>
 											<li>Suspense</li>
@@ -371,7 +406,7 @@
 							</div>
 							<div class="col-lg-4 col-md-6 col-sm-6">
 								<div class="product__item">
-									<div class="product__item__pic set-bg" data-setbg="../lista/img/notokidoki.png"></div>
+									<div class="product__item__pic set-bg" data-setbg="./lista/img/notokidoki.png"></div>
 									<div class="product__item__text">
 										<ul>
 											<li>Comédia</li>
@@ -432,7 +467,89 @@
 							</div>
 						</div>
 					</div>
-				</div>
+				<div class="col-lg-4 col-md-12">
+						<div class="product__sidebar">
+							<div class="product__sidebar__view top-views">
+								<div class="section-title">
+									<h5>Top Views</h5>
+								</div>
+								<ul class="filter__controls top-views__tabs">
+									<li class="active" data-view-tab="day">Dia</li>
+									<li data-view-tab="week">Semana</li>
+									<li data-view-tab="month">Mês</li>
+									<li data-view-tab="year">Ano</li>
+								</ul>
+								<div class="top-views__panel active" data-view-panel="day">
+									<a class="product__sidebar__view__item set-bg" href="./Mods/Monika After Story.html" data-setbg="./lista/img/monika-after-story.jpg">
+										<div class="ep">Infinita</div>
+										<div class="view"><i class="fa fa-eye"></i> 9.8k</div>
+										<h5>Monika After Story</h5>
+									</a>
+									<a class="product__sidebar__view__item set-bg" href="./Mods/Doki Doki Literature Club.html" data-setbg="./lista/img/Doki_Doki_Literature_Club.png">
+										<div class="ep">Base</div>
+										<div class="view"><i class="fa fa-eye"></i> 8.7k</div>
+										<h5>Doki Doki Literature Club</h5>
+									</a>
+									<a class="product__sidebar__view__item set-bg" href="./Mods/DDLC Salvation.html" data-setbg="./lista/img/salvation.png">
+										<div class="ep">PC & Mobile</div>
+										<div class="view"><i class="fa fa-eye"></i> 7.4k</div>
+										<h5>DDLC Salvation</h5>
+									</a>
+								</div>
+								<div class="top-views__panel" data-view-panel="week">
+									<a class="product__sidebar__view__item set-bg" href="./Mods/Doki Doki Blue Skies.html" data-setbg="./lista/img/weclub.jpg">
+										<div class="ep">Romance</div>
+										<div class="view"><i class="fa fa-eye"></i> 21k</div>
+										<h5>Doki Doki Blue Skies</h5>
+									</a>
+									<a class="product__sidebar__view__item set-bg" href="./Mods/Doki Doki Fallen Angel.html" data-setbg="./lista/img/fallen-angel.png">
+										<div class="ep">Drama</div>
+										<div class="view"><i class="fa fa-eye"></i> 18k</div>
+										<h5>Doki Doki Fallen Angel</h5>
+									</a>
+									<a class="product__sidebar__view__item set-bg" href="./Mods/DDLC Summertime.html" data-setbg="./lista/img/summertimee.jpg">
+										<div class="ep">Felicidade</div>
+										<div class="view"><i class="fa fa-eye"></i> 16k</div>
+										<h5>DDLC Summertime</h5>
+									</a>
+								</div>
+								<div class="top-views__panel" data-view-panel="month">
+									<a class="product__sidebar__view__item set-bg" href="./Mods/Just Natsuki.html" data-setbg="./lista/img/Just_Natsuki.jpg">
+										<div class="ep">Infinita</div>
+										<div class="view"><i class="fa fa-eye"></i> 42k</div>
+										<h5>Just Natsuki</h5>
+									</a>
+									<a class="product__sidebar__view__item set-bg" href="./Mods/Foverer & Ever.html" data-setbg="./lista/img/Forever-Ever.png">
+										<div class="ep">PC & Mobile</div>
+										<div class="view"><i class="fa fa-eye"></i> 39k</div>
+										<h5>Foverer & Ever</h5>
+									</a>
+									<a class="product__sidebar__view__item set-bg" href="./Mods/DDLC Starry Eyed.html" data-setbg="./lista/img/starry-eyed.png">
+										<div class="ep">Mistério</div>
+										<div class="view"><i class="fa fa-eye"></i> 33k</div>
+										<h5>DDLC Starry Eyed</h5>
+									</a>
+								</div>
+								<div class="top-views__panel" data-view-panel="year">
+									<a class="product__sidebar__view__item set-bg" href="./Mods/Monika After Story.html" data-setbg="./lista/img/monika-after-story.jpg">
+										<div class="ep">Clássico</div>
+										<div class="view"><i class="fa fa-eye"></i> 120k</div>
+										<h5>Monika After Story</h5>
+									</a>
+									<a class="product__sidebar__view__item set-bg" href="./Mods/Doki Doki Literature Club.html" data-setbg="./lista/img/Doki_Doki_Literature_Club.png">
+										<div class="ep">Base</div>
+										<div class="view"><i class="fa fa-eye"></i> 114k</div>
+										<h5>Doki Doki Literature Club</h5>
+									</a>
+									<a class="product__sidebar__view__item set-bg" href="./Mods/DDLC Salvation.html" data-setbg="./lista/img/salvation.png">
+										<div class="ep">Drama</div>
+										<div class="view"><i class="fa fa-eye"></i> 98k</div>
+										<h5>DDLC Salvation</h5>
+									</a>
+								</div>
+							</div>
+						</div>
+					</div>
 			</div>
 		</div>
 	</section>

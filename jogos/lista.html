@@ -58,21 +58,21 @@
 		<link
 			rel="apple-touch-icon"
 			sizes="180x180"
-			href="../../css/favicon/favicon_io/apple-touch-icon.png"
+			href="../css/favicon/favicon_io/apple-touch-icon.png"
 		/>
 		<link
 			rel="icon"
 			type="image/png"
 			sizes="32x32"
-			href="../../css/favicon/favicon_io/favicon-32x32.png"
+			href="../css/favicon/favicon_io/favicon-32x32.png"
 		/>
 		<link
 			rel="icon"
 			type="image/png"
 			sizes="16x16"
-			href="../../css/favicon/favicon_io/favicon-16x16.png"
+			href="../css/favicon/favicon_io/favicon-16x16.png"
 		/>
-		<link rel="manifest" href="../../css/favicon/favicon_io/site.webmanifest" />
+		<link rel="manifest" href="../css/favicon/favicon_io/site.webmanifest" />
 		<!-- Css Styles -->
 		<link rel="stylesheet" href="../css/bootstrap.min.css" type="text/css" />
 		<link rel="stylesheet" href="../css/font-awesome.min.css" type="text/css" />
@@ -95,7 +95,8 @@
 					<div class="col-lg-2">
 						<div class="header__logo">
 							<a href="../index.html">
-								<img src="img/" alt="" />
+								<img class="header__brand-icon" src="../css/favicon/favicon_io/android-chrome-192x192.png" alt="Doki Doki Translate Club" />
+								<span class="header__brand">DDTC</span>
 							</a>
 						</div>
 					</div>
@@ -151,7 +152,13 @@
 									</div>
 								</div>
 							</div>
-							<div class="row">
+														<div class="mod-search" role="search">
+								<span class="icon_search"></span>
+								<input class="mod-search__input" type="search" placeholder="Pesquisar por nome, gênero ou plataforma" autocomplete="off" />
+								<button class="mod-search__clear" type="button" aria-label="Limpar pesquisa"><span class="icon_close"></span></button>
+								<p class="mod-search__status" aria-live="polite"></p>
+							</div>
+							<div class="row" data-mod-list>
 								<div class="col-lg-4 col-md-6 col-sm-6">
 									<div class="product__item">
 										<div
@@ -329,7 +336,7 @@
 							<a href="./lista-5.html">5</a>
 							<!--<a href="#">4</a>
                       <a href="#">5</a>-->
-							<a href="#"><i class="fa fa-angle-double-right"></i></a>
+							<a href="./lista-2.html" aria-label="Próxima página"><i class="fa fa-angle-double-right"></i></a>
 						</div>
 					</div>
 					<div class="col-lg-4 col-md-6 col-sm-8">
