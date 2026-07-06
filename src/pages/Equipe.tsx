@@ -46,7 +46,7 @@ export const Equipe: React.FC = () => {
       </div>
 
       {/* Team main content */}
-      <section className="team-page spad" style={{ padding: '80px 0', background: '#0b0c2a' }}>
+      <section className="team-page spad" style={{ padding: '80px 0', background: '#0b0c2a', minHeight: '65vh', display: 'flex', alignItems: 'center' }}>
         <div className="container">
           {/* Header Title */}
           <div className="row justify-content-center" style={{ marginBottom: '60px' }}>
