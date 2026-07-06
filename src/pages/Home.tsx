@@ -370,7 +370,7 @@ export const Home: React.FC = () => {
             </div>
 
             {/* Sidebar */}
-            <div className="col-lg-4 col-md-6 col-sm-8">
+            <div className="col-lg-4 col-md-12 col-sm-12">
               <div className="product__sidebar">
                 
                 {/* Top Views Panel */}

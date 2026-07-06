@@ -182,3 +182,52 @@
   }
 }
 
+/* Global Responsiveness Enhancements */
+@media (max-width: 991px) {
+  .hero__text h2 {
+    font-size: 36px !important;
+    line-height: 44px !important;
+  }
+}
+
+@media (max-width: 767px) {
+  .hero__items {
+    padding: 80px 0 !important;
+  }
+  .hero__text h2 {
+    font-size: 28px !important;
+    line-height: 36px !important;
+    margin-top: 15px !important;
+  }
+  .hero__text p {
+    font-size: 14px !important;
+    margin-bottom: 25px !important;
+  }
+  .anime__details__pic {
+    height: 300px !important;
+    margin-bottom: 20px;
+  }
+  .filters-panel {
+    padding: 15px !important;
+  }
+}
+
+@media (max-width: 575px) {
+  .hero__items {
+    padding: 60px 0 !important;
+  }
+  .hero__text h2 {
+    font-size: 24px !important;
+    line-height: 30px !important;
+  }
+  .download-actions a,
+  .download-actions button {
+    width: 100% !important;
+    justify-content: center !important;
+  }
+  .product__sidebar__view__item {
+    height: 160px !important;
+  }
+}
+
+
