@@ -17,6 +17,13 @@ const team: Member[] = [
     description: 'Responsável por reescrever o site em React + TypeScript, otimizar a responsividade para todos os tamanhos de tela, integrar novas mecânicas de layout e gerenciar o repositório moderno.',
     github: 'https://github.com/kayqueprogram',
     avatar: 'https://github.com/kayqueprogram.png'
+  },
+  {
+    name: 'Derik Fernando',
+    role: 'Tradutor & Revisor',
+    badge: 'Colaborador',
+    description: 'Responsável pela tradução e revisão técnica de diversas modificações do catálogo, garantindo a fidelidade e a qualidade do texto em português.',
+    avatar: 'https://api.dicebear.com/7.x/adventurer/svg?seed=Derik'
   }
 ];
 
@@ -50,7 +57,7 @@ export const Equipe: React.FC = () => {
                 </h2>
               </div>
               <p style={{ color: '#b7b7b7', fontSize: '16px', lineHeight: '28px', maxWidth: '600px', margin: '0 auto' }}>
-                A pessoa por trás do desenvolvimento e preservação do acervo da Doki Doki Translate Club Memorial.
+                As pessoas por trás do desenvolvimento e preservação do acervo da Doki Doki Translate Club Memorial.
               </p>
             </div>
           </div>
@@ -58,7 +65,7 @@ export const Equipe: React.FC = () => {
           {/* Cards Grid */}
           <div className="row justify-content-center" style={{ rowGap: '35px' }}>
             {team.map((member, index) => (
-              <div key={index} className="col-lg-8 col-md-12">
+              <div key={index} className="col-lg-6 col-md-12">
                 <div 
                   className="team-card-row" 
                   style={{
