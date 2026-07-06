@@ -17,27 +17,6 @@ const team: Member[] = [
     description: 'Responsável por reescrever o site em React + TypeScript, otimizar a responsividade para todos os tamanhos de tela, integrar novas mecânicas de layout e gerenciar o repositório moderno.',
     github: 'https://github.com/kayqueprogram',
     avatar: 'https://github.com/kayqueprogram.png'
-  },
-  {
-    name: 'Drack',
-    role: 'Criador Original & Administrador',
-    badge: 'Idealizador',
-    description: 'Criador e administrador da Doki Doki Translate Club original, idealizou o repositório histórico e unificou a comunidade brasileira de traduções de DDLC.',
-    avatar: 'https://api.dicebear.com/7.x/adventurer/svg?seed=Drack'
-  },
-  {
-    name: 'Sakaki Leonard',
-    role: 'Ajudante & Colaborador Técnico',
-    badge: 'Colaborador',
-    description: 'Prestou suporte técnico essencial durante os primeiros anos da DDTC, auxiliando na portabilidade e na catalogação das modificações do clube de literatura.',
-    avatar: 'https://api.dicebear.com/7.x/adventurer/svg?seed=Sakaki'
-  },
-  {
-    name: 'Miki',
-    role: 'Colaborador & Tradutor de Mods',
-    badge: 'Tradutor',
-    description: 'Traduziu grandes modificações do universo de DDLC para português (como Monika After Story, Forever & Ever, Act 5, etc.) e ajudou a impulsionar as Visual Novels da equipe.',
-    avatar: 'https://api.dicebear.com/7.x/adventurer/svg?seed=Miki'
   }
 ];
 
@@ -71,20 +50,20 @@ export const Equipe: React.FC = () => {
                 </h2>
               </div>
               <p style={{ color: '#b7b7b7', fontSize: '16px', lineHeight: '28px', maxWidth: '600px', margin: '0 auto' }}>
-                As pessoas por trás da criação, desenvolvimento e preservação do acervo da Doki Doki Translate Club Memorial.
+                A pessoa por trás do desenvolvimento e preservação do acervo da Doki Doki Translate Club Memorial.
               </p>
             </div>
           </div>
 
           {/* Cards Grid */}
-          <div className="row" style={{ rowGap: '35px' }}>
+          <div className="row justify-content-center" style={{ rowGap: '35px' }}>
             {team.map((member, index) => (
-              <div key={index} className="col-lg-6 col-md-12">
+              <div key={index} className="col-lg-8 col-md-12">
                 <div 
                   className="team-card-row" 
                   style={{
                     background: '#121230',
-                    padding: '30px',
+                    padding: '35px',
                     borderRadius: '8px',
                     height: '100%',
                     display: 'flex',
@@ -145,7 +124,7 @@ export const Equipe: React.FC = () => {
                       {member.name}
                     </h4>
 
-                    <p style={{ color: '#b7b7b7', fontSize: '14px', lineHeight: '22px', margin: '4px 0 12px 0' }}>
+                    <p style={{ color: '#b7b7b7', fontSize: '15px', lineHeight: '24px', margin: '4px 0 12px 0' }}>
                       {member.description}
                     </p>
 
@@ -182,26 +161,7 @@ export const Equipe: React.FC = () => {
                             <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
                           </svg>
                         </a>
-                      ) : (
-                        <span 
-                          style={{
-                            background: 'rgba(255,255,255,0.02)',
-                            color: 'rgba(255,255,255,0.2)',
-                            width: '36px',
-                            height: '36px',
-                            borderRadius: '50%',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            border: '1px solid rgba(255,255,255,0.05)',
-                            cursor: 'not-allowed'
-                          }}
-                        >
-                          <svg stroke="currentColor" fill="none" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round" height="18" width="18" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
-                          </svg>
-                        </span>
-                      )}
+                      ) : null}
                     </div>
                   </div>
                 </div>
