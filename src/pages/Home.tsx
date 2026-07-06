@@ -361,7 +361,7 @@ export const Home: React.FC = () => {
                 <div className="product__sidebar__comment__item">
                   <div className="product__sidebar__comment__item__text">
                     <h5 style={{ fontSize: '14px', fontWeight: 700, color: '#ffffff', margin: 0 }}>
-                      Colaboradores: <span style={{ color: '#e53637' }}>Sakaki Leonard & Miki</span>
+                      Colaboradores: <span style={{ color: '#e53637' }}>Derik Fernando, Sakaki Leonard & Miki</span>
                     </h5>
                   </div>
                 </div>
