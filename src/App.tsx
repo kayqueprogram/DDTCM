@@ -42,7 +42,7 @@ export const AppContent: React.FC = () => {
                     className="header__brand-icon"
                     src="/css/favicon/favicon_io/android-chrome-192x192.png"
                     alt="Doki Doki Translate Club"
-                    style={{ width: '52px', height: '52px' }}
+                    style={{ width: '52px', height: '52px', maxHeight: 'none' }}
                   />
                   <span className="header__brand" style={{ fontSize: '28px', fontWeight: 900, letterSpacing: '1px', color: '#ffffff' }}>
                     DDTC
