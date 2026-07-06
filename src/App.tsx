@@ -3,7 +3,6 @@ import { BrowserRouter as Router, Routes, Route, Link, useLocation } from 'react
 import { Home } from './pages/Home';
 import { ModList } from './pages/ModList';
 import { ModDetails } from './pages/ModDetails';
-import { Aviso } from './pages/Aviso';
 import { ArrowUp } from 'lucide-react';
 
 const ScrollToTop = () => {
@@ -56,9 +55,7 @@ export const AppContent: React.FC = () => {
                     <li className={location.pathname === '/mods' ? 'active' : ''}>
                       <Link to="/mods">Visual Novels</Link>
                     </li>
-                    <li className={location.pathname === '/aviso' ? 'active' : ''}>
-                      <Link to="/aviso">Aviso</Link>
-                    </li>
+
                   </ul>
                 </nav>
               </div>
@@ -73,7 +70,7 @@ export const AppContent: React.FC = () => {
           <Route path="/" element={<Home />} />
           <Route path="/mods" element={<ModList />} />
           <Route path="/mod/:slug" element={<ModDetails />} />
-          <Route path="/aviso" element={<Aviso />} />
+
         </Routes>
       </main>
 
@@ -108,7 +105,7 @@ export const AppContent: React.FC = () => {
                 <ul style={{ display: 'flex', justifyContent: 'center', gap: '20px', listStyle: 'none', margin: 0, padding: 0 }}>
                   <li><Link to="/">Homepage</Link></li>
                   <li><Link to="/mods">Lista de Mods</Link></li>
-                  <li><Link to="/aviso">Aviso</Link></li>
+
                 </ul>
               </div>
             </div>

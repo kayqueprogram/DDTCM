@@ -53,8 +53,8 @@ const slides: Slide[] = [
     label: 'Aproveitem',
     title: 'Espero que seja o que queriam.',
     description: 'A pedidos, reunimos novamente traduções da nossa antiga equipe.',
-    actionText: 'Ler aviso',
-    actionLink: '/aviso'
+    actionText: 'Ver lista de mods',
+    actionLink: '/mods'
   },
   {
     bg: '/img/label/label3.jpg',
@@ -69,8 +69,8 @@ const slides: Slide[] = [
     label: 'Futuro!',
     title: 'Teremos mais traduções de DDLC?',
     description: 'O memorial segue como uma forma simples de preservar e organizar o que já foi lançado.',
-    actionText: 'Ler aviso',
-    actionLink: '/aviso'
+    actionText: 'Ver lista de mods',
+    actionLink: '/mods'
   }
 ];
 
