@@ -5,6 +5,7 @@ import { ModList } from './pages/ModList';
 import { ModDetails } from './pages/ModDetails';
 import { Equipe } from './pages/Equipe';
 import { ArrowUp, Menu, X } from 'lucide-react';
+import { Helmet } from 'react-helmet-async';
 
 const ScrollToTop = () => {
   const { pathname } = useLocation();
@@ -29,6 +30,13 @@ export const AppContent: React.FC = () => {
 
   return (
     <div className="site-wrapper">
+      <Helmet>
+        <meta
+          name="google-site-verification"
+          content="algdMFHXRk52i1DJ7sOjrVivfiR0zYlgDwMzPS4BO80"
+        />
+      </Helmet>
+
       <ScrollToTop />
 
       {/* Header Section */}
