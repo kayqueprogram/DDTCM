@@ -249,4 +249,13 @@
   }
 }
 
+/* Carousel Arrow Hover Effects */
+.btn-arrow {
+  transition: all 0.3s ease !important;
+}
+.btn-arrow:hover {
+  background-color: #e53637 !important;
+  transform: scale(1.1);
+}
+
 

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import type { Mod } from '../types/mod';
 import modsDataRaw from '../data/mods.json';
-import { Heart, Clock, Grid as GridIcon, Eye, ArrowRight } from 'lucide-react';
+import { Heart, Clock, Grid as GridIcon, Eye, ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
 
 
 const modsData: Mod[] = modsDataRaw as Mod[];
@@ -169,11 +169,11 @@ export const Home: React.FC = () => {
             
             {/* Slider Controls */}
             <div className="slider-controls" style={{ position: 'absolute', bottom: '20px', right: '30px', display: 'flex', gap: '10px', zIndex: 10 }}>
-              <button onClick={handlePrevSlide} className="btn-arrow" style={{ background: 'rgba(255,255,255,0.1)', color: '#fff', border: 'none', width: '40px', height: '40px', borderRadius: '50%', cursor: 'pointer', transition: '0.3s' }}>
-                <i className="arrow_carrot-left" style={{ fontSize: '20px' }}></i>
+              <button onClick={handlePrevSlide} className="btn-arrow" style={{ background: 'rgba(255,255,255,0.1)', color: '#fff', border: 'none', width: '40px', height: '40px', borderRadius: '50%', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: '0.3s' }}>
+                <ChevronLeft size={20} />
               </button>
-              <button onClick={handleNextSlide} className="btn-arrow" style={{ background: 'rgba(255,255,255,0.1)', color: '#fff', border: 'none', width: '40px', height: '40px', borderRadius: '50%', cursor: 'pointer', transition: '0.3s' }}>
-                <i className="arrow_carrot-right" style={{ fontSize: '20px' }}></i>
+              <button onClick={handleNextSlide} className="btn-arrow" style={{ background: 'rgba(255,255,255,0.1)', color: '#fff', border: 'none', width: '40px', height: '40px', borderRadius: '50%', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: '0.3s' }}>
+                <ChevronRight size={20} />
               </button>
             </div>
             
