@@ -35,7 +35,7 @@ export const AppContent: React.FC = () => {
         <div className="container">
           <div className="row align-items-center" style={{ position: 'relative' }}>
             <div className="col-lg-3 col-md-4 col-8">
-              <div className="header__logo" style={{ padding: '15px 0' }}>
+              <div className="header__logo" style={{ padding: '28px 0' }}>
                 <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                   <img
                     className="header__brand-icon"
