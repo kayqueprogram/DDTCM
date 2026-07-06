@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Link, useLocation } from 'react
 import { Home } from './pages/Home';
 import { ModList } from './pages/ModList';
 import { ModDetails } from './pages/ModDetails';
-import { ArrowUp } from 'lucide-react';
+import { ArrowUp, Menu, X } from 'lucide-react';
 
 const ScrollToTop = () => {
   const { pathname } = useLocation();
@@ -15,6 +15,11 @@ const ScrollToTop = () => {
 
 export const AppContent: React.FC = () => {
   const location = useLocation();
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false);
+
+  React.useEffect(() => {
+    setIsMobileMenuOpen(false);
+  }, [location]);
 
   const handleScrollToTop = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -28,34 +33,50 @@ export const AppContent: React.FC = () => {
       {/* Header Section */}
       <header className="header">
         <div className="container">
-          <div className="row align-items-center">
-            <div className="col-lg-3 col-md-3">
-              <div className="header__logo">
-                <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <div className="row align-items-center" style={{ position: 'relative' }}>
+            <div className="col-lg-3 col-md-4 col-8">
+              <div className="header__logo" style={{ padding: '15px 0' }}>
+                <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                   <img
                     className="header__brand-icon"
                     src="/css/favicon/favicon_io/android-chrome-192x192.png"
                     alt="Doki Doki Translate Club"
-                    style={{ width: '40px', height: '40px' }}
+                    style={{ width: '52px', height: '52px' }}
                   />
-                  <span className="header__brand" style={{ fontSize: '22px', fontWeight: 900, letterSpacing: '1px', color: '#ffffff' }}>
+                  <span className="header__brand" style={{ fontSize: '28px', fontWeight: 900, letterSpacing: '1px', color: '#ffffff' }}>
                     DDTC
                   </span>
                 </Link>
               </div>
             </div>
             
-            <div className="col-lg-9 col-md-9">
-              <div className="header__nav" style={{ display: 'flex', justifyContent: 'flex-end' }}>
-                <nav className="header__menu mobile-menu">
-                  <ul style={{ display: 'flex', gap: '25px', listStyle: 'none', margin: 0, padding: 0 }}>
+            <div className="col-lg-9 col-md-8 col-4">
+              <div className="header__nav-container" style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
+                {/* Mobile Menu Button */}
+                <button
+                  className="mobile-menu-btn"
+                  onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                  style={{
+                    background: 'transparent',
+                    border: 'none',
+                    color: '#fff',
+                    cursor: 'pointer',
+                    padding: '8px',
+                    display: 'none' // will be shown via media queries in index.css
+                  }}
+                  aria-label="Toggle menu"
+                >
+                  {isMobileMenuOpen ? <X size={26} /> : <Menu size={26} />}
+                </button>
+
+                <nav className={`header__menu ${isMobileMenuOpen ? 'mobile-open' : ''}`}>
+                  <ul className="nav-links">
                     <li className={location.pathname === '/' ? 'active' : ''}>
                       <Link to="/">Home</Link>
                     </li>
                     <li className={location.pathname === '/mods' ? 'active' : ''}>
                       <Link to="/mods">Visual Novels</Link>
                     </li>
-
                   </ul>
                 </nav>
               </div>

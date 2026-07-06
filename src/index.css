@@ -112,3 +112,73 @@
 .product__sidebar__view .filter__controls.top-views__tabs li {
   margin-right: 0 !important;
 }
+
+/* Responsive Header and Mobile Menu Menu CSS */
+.header__menu ul.nav-links {
+  display: flex;
+  gap: 25px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+@media (max-width: 767px) {
+  .mobile-menu-btn {
+    display: block !important;
+  }
+
+  .header__menu {
+    display: none;
+  }
+
+  .header__menu.mobile-open {
+    display: block !important;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background: rgba(7, 7, 32, 0.98);
+    backdrop-filter: blur(14px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    z-index: 1000;
+  }
+
+  .header__menu.mobile-open ul.nav-links {
+    flex-direction: column;
+    padding: 20px !important;
+    gap: 0 !important;
+    text-align: left;
+  }
+
+  .header__menu.mobile-open ul.nav-links li {
+    display: block;
+    margin: 0 !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  }
+
+  .header__menu.mobile-open ul.nav-links li:last-child {
+    border-bottom: none;
+  }
+
+  .header__menu.mobile-open ul.nav-links li a {
+    padding: 15px 20px !important;
+    display: block;
+  }
+
+  .header__menu.mobile-open ul.nav-links li.active a {
+    border-radius: 0;
+    background: transparent;
+    color: #e53637 !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .header__brand {
+    font-size: 24px !important;
+  }
+  .header__brand-icon {
+    width: 42px !important;
+    height: 42px !important;
+  }
+}
+
