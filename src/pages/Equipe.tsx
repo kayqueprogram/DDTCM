@@ -1,5 +1,4 @@
 import React from 'react';
-import { Users, Shield, Award, HeartHandshake } from 'lucide-react';
 
 interface Member {
   name: string;
@@ -7,7 +6,7 @@ interface Member {
   description: string;
   github?: string;
   badge: string;
-  icon: React.ReactNode;
+  avatar: string;
 }
 
 const team: Member[] = [
@@ -17,28 +16,28 @@ const team: Member[] = [
     badge: 'Ativo',
     description: 'Responsável por reescrever o site em React + TypeScript, otimizar a responsividade para todos os tamanhos de tela, integrar novas mecânicas de layout e gerenciar o repositório moderno.',
     github: 'https://github.com/kayqueprogram',
-    icon: <Shield size={24} style={{ color: '#e53637' }} />
+    avatar: 'https://github.com/kayqueprogram.png'
   },
   {
     name: 'Drack',
     role: 'Criador Original & Administrador',
     badge: 'Idealizador',
     description: 'Criador e administrador da Doki Doki Translate Club original, idealizou o repositório histórico e unificou a comunidade brasileira de traduções de DDLC.',
-    icon: <Award size={24} style={{ color: '#e53637' }} />
+    avatar: 'https://api.dicebear.com/7.x/adventurer/svg?seed=Drack'
   },
   {
     name: 'Sakaki Leonard',
     role: 'Ajudante & Colaborador Técnico',
     badge: 'Colaborador',
     description: 'Prestou suporte técnico essencial durante os primeiros anos da DDTC, auxiliando na portabilidade e na catalogação das modificações do clube de literatura.',
-    icon: <HeartHandshake size={24} style={{ color: '#e53637' }} />
+    avatar: 'https://api.dicebear.com/7.x/adventurer/svg?seed=Sakaki'
   },
   {
     name: 'Miki',
     role: 'Colaborador & Tradutor de Mods',
     badge: 'Tradutor',
     description: 'Traduziu grandes modificações do universo de DDLC para português (como Monika After Story, Forever & Ever, Act 5, etc.) e ajudou a impulsionar as Visual Novels da equipe.',
-    icon: <Users size={24} style={{ color: '#e53637' }} />
+    avatar: 'https://api.dicebear.com/7.x/adventurer/svg?seed=Miki'
   }
 ];
 
@@ -78,7 +77,7 @@ export const Equipe: React.FC = () => {
           </div>
 
           {/* Cards Grid */}
-          <div className="row" style={{ rowGap: '30px' }}>
+          <div className="row" style={{ rowGap: '35px' }}>
             {team.map((member, index) => (
               <div key={index} className="col-lg-6 col-md-6">
                 <div 
@@ -98,25 +97,35 @@ export const Equipe: React.FC = () => {
                 >
                   <div>
                     {/* Header info */}
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '20px' }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '25px', flexWrap: 'wrap', gap: '15px' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '20px', flexWrap: 'wrap' }}>
                         <div 
                           style={{ 
-                            background: 'rgba(229, 54, 55, 0.1)', 
-                            padding: '12px', 
+                            width: '64px',
+                            height: '64px',
                             borderRadius: '50%',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center'
+                            overflow: 'hidden',
+                            border: '3px solid #e53637',
+                            boxShadow: '0 0 15px rgba(229, 54, 55, 0.4)',
+                            background: '#1d1d3d',
+                            flexShrink: 0
                           }}
                         >
-                          {member.icon}
+                          <img 
+                            src={member.avatar} 
+                            alt={member.name} 
+                            style={{ 
+                              width: '100%', 
+                              height: '100%', 
+                              objectFit: 'cover' 
+                            }} 
+                          />
                         </div>
                         <div>
-                          <h4 style={{ color: '#ffffff', fontSize: '20px', fontWeight: 700, margin: 0 }}>
+                          <h4 style={{ color: '#ffffff', fontSize: '22px', fontWeight: 700, margin: '0 0 5px 0' }}>
                             {member.name}
                           </h4>
-                          <span style={{ color: '#e53637', fontSize: '13px', fontWeight: 600 }}>
+                          <span style={{ color: '#e53637', fontSize: '14px', fontWeight: 600 }}>
                             {member.role}
                           </span>
                         </div>
@@ -127,9 +136,10 @@ export const Equipe: React.FC = () => {
                           fontWeight: 700, 
                           color: '#ffffff', 
                           background: '#e53637', 
-                          padding: '3px 10px', 
+                          padding: '4px 12px', 
                           borderRadius: '4px',
-                          textTransform: 'uppercase'
+                          textTransform: 'uppercase',
+                          letterSpacing: '0.5px'
                         }}
                       >
                         {member.badge}
@@ -154,8 +164,9 @@ export const Equipe: React.FC = () => {
                           display: 'inline-flex', 
                           alignItems: 'center', 
                           gap: '8px', 
-                          padding: '8px 16px', 
-                          fontSize: '12px' 
+                          padding: '8px 18px', 
+                          fontSize: '12px',
+                          borderRadius: '4px'
                         }}
                       >
                         <svg stroke="currentColor" fill="none" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round" height="14" width="14" xmlns="http://www.w3.org/2000/svg" style={{ display: 'inline' }}>
