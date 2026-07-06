@@ -1,0 +1,114 @@
+/* App global overrides and helpers */
+#root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.site-wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  width: 100%;
+}
+
+.main-content {
+  flex: 1 0 auto;
+}
+
+.footer {
+  flex-shrink: 0;
+}
+
+/* Fix active navigation styling */
+.header__menu ul li.active a {
+  color: #ffffff !important;
+  background: #e53637;
+  border-radius: 4px;
+}
+
+.header__menu ul li a {
+  transition: color 0.3s ease;
+}
+
+.header__menu ul li a:hover {
+  color: #e53637;
+}
+
+/* Transitions and interactive cards */
+.product__item {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.product__item:hover {
+  transform: translateY(-5px);
+}
+
+.overview__item:hover {
+  transform: translateY(-3px);
+  background: #25254d !important;
+}
+
+/* Fix Colorlib's hidden slider text style when not using Owl Carousel */
+.hero__text .label,
+.hero__text h2,
+.hero__text p,
+.hero__text a,
+.hero__text .hero__actions {
+  top: 0 !important;
+  opacity: 1 !important;
+}
+
+/* Animations for hero slides */
+.hero__items {
+  animation: fadeIn 0.8s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Custom styled buttons */
+.watch-btn {
+  background: #e53637;
+  color: #ffffff;
+  border-radius: 4px;
+  font-weight: 700;
+  text-transform: uppercase;
+  transition: background 0.3s ease;
+}
+
+.watch-btn:hover {
+  background: #ff4d4f;
+  color: #ffffff;
+}
+
+/* Filters animations */
+.categories-list button {
+  outline: none;
+}
+.categories-list button:hover {
+  opacity: 0.9;
+}
+
+/* Fix Top Views tabs positioning to flow statically under the title instead of absolute positioning at the top */
+.product__sidebar__view .filter__controls.top-views__tabs {
+  position: static !important;
+  display: flex !important;
+  gap: 10px !important;
+  padding: 0 !important;
+  list-style: none !important;
+  margin-bottom: 25px !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+  padding-bottom: 15px !important;
+  float: none !important;
+}
+
+.product__sidebar__view .filter__controls.top-views__tabs li {
+  margin-right: 0 !important;
+}
