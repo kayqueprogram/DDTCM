@@ -469,6 +469,72 @@ export const Home: React.FC = () => {
                 </div>
               </div>
 
+              {/* Anúncios Panel */}
+              <div className="product__sidebar__view" style={{ background: '#121230', padding: '25px', borderRadius: '8px', marginBottom: '30px' }}>
+                <div className="section-title" style={{ marginBottom: '20px' }}>
+                  <h5 style={{ color: '#ffffff', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1px', position: 'relative', paddingLeft: '15px' }}>
+                    <span style={{ position: 'absolute', left: 0, top: 0, width: '4px', height: '100%', backgroundColor: '#e53637' }} />
+                    Anúncios
+                  </h5>
+                </div>
+                
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
+                  {/* Apoia.se Card */}
+                  <a
+                    href="https://apoia.se/ddtc"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{
+                      background: '#e53637',
+                      borderRadius: '6px',
+                      padding: '30px 20px',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      color: '#ffffff',
+                      textDecoration: 'none',
+                      transition: 'transform 0.2s',
+                      textAlign: 'center'
+                    }}
+                    className="announcement-card"
+                    onMouseEnter={(e) => (e.currentTarget.style.transform = 'scale(1.02)')}
+                    onMouseLeave={(e) => (e.currentTarget.style.transform = 'scale(1)')}
+                  >
+                    <span style={{ fontSize: '26px', fontWeight: 900, fontStyle: 'italic', letterSpacing: '-0.5px' }}>APOIA.se</span>
+                    <span style={{ fontSize: '15px', fontWeight: 600, marginTop: '10px' }}>Nosso Apoia-se!</span>
+                  </a>
+
+                  {/* Discord Card */}
+                  <a
+                    href="https://discord.gg/ddtc"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{
+                      background: '#5865F2',
+                      borderRadius: '6px',
+                      padding: '30px 20px',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      color: '#ffffff',
+                      textDecoration: 'none',
+                      transition: 'transform 0.2s',
+                      textAlign: 'center'
+                    }}
+                    className="announcement-card"
+                    onMouseEnter={(e) => (e.currentTarget.style.transform = 'scale(1.02)')}
+                    onMouseLeave={(e) => (e.currentTarget.style.transform = 'scale(1)')}
+                  >
+                    <svg width="48" height="36" viewBox="0 0 127.14 96.36" fill="currentColor" style={{ marginBottom: '10px' }}>
+                      <path d="M107.7,8.07A105.15,105.15,0,0,0,77.26,0a77.19,77.19,0,0,0-3.3,6.83A96.67,96.67,0,0,0,53.22,6.83,77.19,77.19,0,0,0,49.88,0,105.15,105.15,0,0,0,19.44,8.07C3.66,31.58-1.86,54.65,1,77.53A105.73,105.73,0,0,0,32,96.36a77.7,77.7,0,0,0,6.63-10.85,68.43,68.43,0,0,1-10.43-5c.87-.64,1.71-1.32,2.51-2a75.46,75.46,0,0,0,72.76,0c.8,0.71,1.64,1.38,2.51,2a68.43,68.43,0,0,1-10.43,5,77.7,77.7,0,0,0,6.63,10.85,105.73,105.73,0,0,0,31.06-18.83C129.82,49.82,123.63,26.91,107.7,8.07ZM42.45,65.69C36.18,65.69,31,60,31,53S36.18,40.36,42.45,40.36,53.86,46,53.86,53,48.72,65.69,42.45,65.69Zm42.24,0C78.41,65.69,73.24,60,73.24,53S78.41,40.36,84.69,40.36,96.1,46,96.1,53,91,65.69,84.69,65.69Z"/>
+                    </svg>
+                    <span style={{ fontSize: '15px', fontWeight: 600 }}>Confira nosso Discord</span>
+                  </a>
+                </div>
+              </div>
+
               </div>
             </div>
 
