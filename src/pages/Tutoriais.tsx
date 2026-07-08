@@ -1,575 +1,1046 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Seo } from '../components/Seo';
-import { 
-  AlertCircle,
-  ChevronRight,
-  ArrowLeft,
-  ArrowRight,
-  Info,
-  Search
+import {
+  Callout, Steps, CodeBlock, CharacterCard, SectionHeading, P
+} from '../components/DocsComponents';
+import '../styles/docs.css';
+import {
+  Search, ChevronRight, ArrowLeft, ArrowRight,
+  Clock, ThumbsUp, ThumbsDown, BookOpen,
+  Smartphone, Laptop, HelpCircle, PenLine, Hash
 } from 'lucide-react';
+
+// ─────────────────────────────────────────────────────────────
+// Types
+// ─────────────────────────────────────────────────────────────
+interface TocEntry { id: string; label: string; }
 
 interface Article {
   id: string;
-  title: string;
   category: string;
   categoryLabel: string;
-  content: React.ReactNode;
+  categoryIcon: React.ReactNode;
+  title: string;
   keywords: string;
+  readingTime: number; // minutes
+  difficulty: 'beginner' | 'intermediate' | 'advanced';
+  toc: TocEntry[];
+  content: React.ReactNode;
 }
 
+// ─────────────────────────────────────────────────────────────
+// ARTICLES DATA
+// ─────────────────────────────────────────────────────────────
+const ARTICLES: Article[] = [
+  // ────────── 1. INSTALAÇÃO PC ──────────
+  {
+    id: 'pc-install',
+    category: 'install',
+    categoryLabel: 'Instalação de Mods',
+    categoryIcon: <Laptop size={14} />,
+    title: 'Como instalar mods no PC (Steam & Standalone)',
+    keywords: 'instalacao pc steam standalone game pasta game ddlc.exe windows linux mac extrair zip rar winrar 7zip',
+    readingTime: 6,
+    difficulty: 'beginner',
+    toc: [
+      { id: 'pc-intro', label: 'Introdução' },
+      { id: 'pc-download', label: '1 — Baixar o DDLC original' },
+      { id: 'pc-extract', label: '2 — Extrair o jogo' },
+      { id: 'pc-install-mod', label: '3 — Instalar o mod' },
+      { id: 'pc-steam', label: 'E se eu usar a Steam?' },
+      { id: 'pc-linux', label: 'Linux / macOS' },
+    ],
+    content: (
+      <>
+        <SectionHeading id="pc-intro">Introdução</SectionHeading>
+        <P>
+          Instalar um mod de <strong>Doki Doki Literature Club</strong> no computador é um processo simples — basicamente você baixa
+          o jogo original limpo e substitui alguns arquivos dentro da pasta <code>game/</code>. Siga cada passo com atenção para
+          garantir que não haja conflitos com salvamentos anteriores.
+        </P>
+
+        <Callout type="danger" title="Não instale sobre saves antigos">
+          Se você já jogou o DDLC original antes, existe um arquivo <code>firstrun</code> que precisa ser deletado para que o mod
+          inicie corretamente. Se não fizer isso, o jogo pode pular a introdução do mod ou apresentar bugs.
+        </Callout>
+
+        {/* ─── PASSO 1 ─── */}
+        <SectionHeading id="pc-download">Passo 1 — Baixar o DDLC original</SectionHeading>
+        <P>
+          O Doki Doki Literature Club é gratuito e disponibilizado pela Team Salvato em dois lugares oficiais:
+        </P>
+        <ul style={{ color: '#9ba3b5', fontSize: '15px', lineHeight: '1.9', paddingLeft: '22px', marginBottom: '16px' }}>
+          <li>
+            <a href="https://ddlc.moe" target="_blank" rel="noopener noreferrer"
+               style={{ color: '#e53637', fontWeight: 600 }}>ddlc.moe</a> — download direto (Standalone), <strong>recomendado para mods</strong>
+          </li>
+          <li>
+            <a href="https://store.steampowered.com/app/698780/Doki_Doki_Literature_Club/" target="_blank" rel="noopener noreferrer"
+               style={{ color: '#e53637', fontWeight: 600 }}>Steam</a> — funciona, mas requer cuidados extras (veja abaixo)
+          </li>
+        </ul>
+        <Callout type="tip" title="Use sempre a versão Standalone para mods">
+          Baixe o ZIP do site ddlc.moe. Isso garante uma cópia limpa sem interferência da sincronização da Steam.
+        </Callout>
+
+        {/* ─── PASSO 2 ─── */}
+        <SectionHeading id="pc-extract">Passo 2 — Extrair o jogo</SectionHeading>
+        <P>
+          Extraia o arquivo ZIP em um local acessível. Recomendamos criar uma pasta dedicada:
+        </P>
+        <CodeBlock lang="texto">{`C:\\Jogos\\DDLC\\`}</CodeBlock>
+        <Callout type="warning" title="Evite Arquivos de Programas">
+          Não extraia em <code>C:\Arquivos de Programas\</code> — essa pasta requer permissão de administrador para cada modificação
+          de arquivo, o que pode gerar erros silenciosos durante a instalação do mod.
+        </Callout>
+        <P>A estrutura final de pastas deve ficar assim:</P>
+        <CodeBlock lang="árvore">{`DDLC/
+├── game/           ← arquivos do jogo (aqui vão os mods)
+│   ├── audio/
+│   ├── images/
+│   ├── scripts/
+│   └── ...
+├── lib/
+├── renpy/
+└── DDLC.exe        ← executável principal`}</CodeBlock>
+
+        {/* ─── PASSO 3 ─── */}
+        <SectionHeading id="pc-install-mod">Passo 3 — Instalar o mod</SectionHeading>
+        <Steps items={[
+          {
+            title: 'Baixe o arquivo do mod',
+            body: 'Acesse a página do mod desejado aqui no acervo e clique no botão de download. O arquivo normalmente vem como .zip ou .rar.'
+          },
+          {
+            title: 'Extraia o conteúdo do mod',
+            body: (
+              <>
+                Use o <strong>WinRAR</strong> ou <strong>7-Zip</strong> para extrair. Você verá uma pasta ou um conjunto de arquivos com extensões <code>.rpy</code>, <code>.rpyc</code> e possivelmente imagens.
+              </>
+            )
+          },
+          {
+            title: 'Copie para dentro da pasta game/',
+            body: (
+              <>
+                Selecione todos os arquivos extraídos do mod e cole-os <strong>dentro de <code>DDLC/game/</code></strong>.
+                Quando o Windows perguntar sobre substituição, confirme clicando em <strong>"Substituir os arquivos no destino"</strong>.
+              </>
+            )
+          },
+          {
+            title: '(Opcional) Delete o arquivo firstrun',
+            body: (
+              <>
+                Se você já jogou antes, delete o arquivo <code>DDLC/game/saves/firstrun</code> para que o mod inicie a partir do zero.
+              </>
+            )
+          },
+          {
+            title: 'Inicie o jogo',
+            body: (
+              <>
+                Abra o <code>DDLC.exe</code> na raiz da pasta. <strong>Nunca abra pela Steam</strong> — isso pode sobrescrever seus arquivos modificados.
+              </>
+            )
+          }
+        ]} />
+
+        <Callout type="info" title="Verificando se o mod instalou corretamente">
+          Ao abrir o jogo, o título da janela ou o menu inicial terão o nome do mod, e não "Doki Doki Literature Club". Se ainda mostrar o jogo original, verifique se os arquivos foram copiados para a pasta <code>game/</code> correta.
+        </Callout>
+
+        {/* ─── STEAM ─── */}
+        <SectionHeading id="pc-steam">E se eu usar a versão da Steam?</SectionHeading>
+        <P>
+          É possível instalar mods na versão da Steam, mas com um cuidado extra: você precisa <strong>desabilitar a sincronização
+          na nuvem</strong> para o DDLC. Caso contrário, a Steam pode restaurar os arquivos originais na próxima vez que você abrir.
+        </P>
+        <Steps items={[
+          {
+            title: 'Desabilite o Cloud Save do DDLC',
+            body: (
+              <>
+                Clique com o botão direito em DDLC na sua biblioteca Steam → <strong>Propriedades</strong> → aba <strong>"Geral"</strong> →
+                desmarque <em>"Manter jogos sincronizados na Nuvem Steam para Doki Doki Literature Club!"</em>.
+              </>
+            )
+          },
+          {
+            title: 'Localize a pasta do jogo',
+            body: (
+              <>
+                No Steam: botão direito no jogo → <strong>Gerenciar</strong> → <strong>Procurar arquivos locais</strong>.
+                A pasta se abrirá no Windows Explorer.
+              </>
+            )
+          },
+          {
+            title: 'Copie os arquivos do mod para game/',
+            body: 'O processo é idêntico ao da versão Standalone. Substitua os arquivos quando solicitado.'
+          },
+          {
+            title: 'Inicie pelo executável, não pela Steam',
+            body: (
+              <>
+                Abra o <code>DDLC.exe</code> diretamente na pasta do jogo. Abrir pela Steam pode triggerar verificação de arquivos e reverter o mod.
+              </>
+            )
+          },
+        ]} />
+
+        {/* ─── LINUX/MAC ─── */}
+        <SectionHeading id="pc-linux">Linux e macOS</SectionHeading>
+        <P>
+          O processo é o mesmo, apenas os nomes de arquivos e executáveis diferem:
+        </P>
+        <CodeBlock lang="bash">{`# Linux — executável na raiz
+chmod +x ./DDLC.sh
+./DDLC.sh
+
+# macOS — abre o app bundle
+open DDLC.app`}</CodeBlock>
+        <Callout type="tip" title="Permissões no Linux">
+          Se o jogo não abrir, tente tornar o executável executável manualmente com <code>chmod +x DDLC.sh</code> no terminal.
+        </Callout>
+      </>
+    )
+  },
+
+  // ────────── 2. INSTALAÇÃO ANDROID ──────────
+  {
+    id: 'android-install',
+    category: 'install',
+    categoryLabel: 'Instalação de Mods',
+    categoryIcon: <Smartphone size={14} />,
+    title: 'Como instalar portes no Android (APK)',
+    keywords: 'porte android apk celular mobile smartphone fontes desconhecidas play protect seguranca instalar app',
+    readingTime: 4,
+    difficulty: 'beginner',
+    toc: [
+      { id: 'apk-intro', label: 'O que é um porte APK?' },
+      { id: 'apk-steps', label: 'Passo a passo de instalação' },
+      { id: 'apk-protect', label: 'Aviso do Play Protect' },
+      { id: 'apk-faq', label: 'Dúvidas comuns sobre APKs' },
+    ],
+    content: (
+      <>
+        <SectionHeading id="apk-intro">O que é um porte APK?</SectionHeading>
+        <P>
+          Os mods de DDLC são feitos com a engine <strong>Ren'Py</strong>, que suporta exportação nativa para Android. Nossa equipe
+          compila os mods e os disponibiliza como arquivos <code>.apk</code> — aplicativos instaláveis diretamente no celular,
+          sem necessidade de Root ou emulador.
+        </P>
+        <Callout type="info" title="Compatibilidade">
+          Os portes são compatíveis com Android 8.0 (Oreo) ou superior. A experiência é idêntica ao PC, incluindo áudio, imagens e
+          todas as rotas do mod.
+        </Callout>
+
+        <SectionHeading id="apk-steps">Passo a passo de instalação</SectionHeading>
+        <Steps items={[
+          {
+            title: 'Encontre o mod desejado',
+            body: 'Na página do mod no nosso acervo, procure pelo botão "📱 Download APK (Android)". Nem todo mod possui porte — verifique a disponibilidade antes.'
+          },
+          {
+            title: 'Baixe o APK',
+            body: (
+              <>
+                O download pode ser feito direto pelo navegador do celular ou por computador (você transfere via cabo USB depois).
+                O arquivo tem extensão <code>.apk</code> e geralmente pesa entre 200MB e 800MB.
+              </>
+            )
+          },
+          {
+            title: 'Autorize fontes desconhecidas',
+            body: (
+              <>
+                Ao tocar no arquivo APK pela primeira vez, o Android pedirá para ativar instalação de fontes externas. Siga:
+                <br /><br />
+                <strong>Android 8+:</strong> <em>Configurações → Aplicativos → Seu navegador → Instalar apps desconhecidos → Permitir</em>
+                <br />
+                <strong>Android 7 ou inferior:</strong> <em>Configurações → Segurança → Fontes desconhecidas → Ativar</em>
+              </>
+            )
+          },
+          {
+            title: 'Instale o APK',
+            body: 'Toque no arquivo .apk, confirme as permissões solicitadas e aguarde a conclusão. O ícone do mod aparecerá na tela inicial do seu celular.'
+          },
+          {
+            title: 'Jogue!',
+            body: 'Abra o mod pelo ícone como qualquer outro aplicativo. O salvamento é armazenado localmente no aparelho.'
+          },
+        ]} />
+
+        <SectionHeading id="apk-protect">Aviso do Google Play Protect</SectionHeading>
+        <P>
+          O Google Play Protect pode exibir um alerta vermelho ou laranja dizendo <em>"App potencialmente prejudicial bloqueado"</em>.
+          Isso acontece porque qualquer app fora da Play Store é tratado como desconhecido, <strong>independente de seu conteúdo</strong>.
+        </P>
+        <P>
+          Para prosseguir com a instalação com segurança:
+        </P>
+        <Steps items={[
+          {
+            title: 'Toque em "Mais detalhes" ou "Saiba mais"',
+            body: 'O botão normalmente aparece no rodapé do alerta em vermelho.'
+          },
+          {
+            title: 'Selecione "Instalar assim mesmo"',
+            body: 'Confirme que deseja instalar o aplicativo. O sistema concluirá a instalação normalmente.'
+          }
+        ]} />
+        <Callout type="tip" title="Sobre a segurança dos APKs">
+          Todos os nossos portes são gerados diretamente dos arquivos-fonte do mod usando a engine Ren'Py oficial, sem adicionar
+          código externo. Não existe risco ao aparelho — o aplicativo só acessa armazenamento para salvar o jogo.
+        </Callout>
+
+        <SectionHeading id="apk-faq">Dúvidas comuns sobre APKs</SectionHeading>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+          {[
+            {
+              q: 'O porte consome muito espaço?',
+              a: 'Varia por mod. Em média, os portes ocupam entre 200MB e 900MB, dependendo da quantidade de assets de áudio e imagem incluídos.'
+            },
+            {
+              q: 'Meu progresso no PC é transferível para o Android?',
+              a: 'Não diretamente. Os arquivos de save têm formatos diferentes entre plataformas e não são compatíveis entre si.'
+            },
+            {
+              q: 'Posso desinstalar e reinstalar sem perder saves?',
+              a: 'Isso depende da versão do Android e de como o jogo armazena o save. Para garantir, faça backup manual da pasta de saves antes de desinstalar.'
+            }
+          ].map((item, i) => (
+            <details
+              key={i}
+              style={{
+                background: 'rgba(255,255,255,0.02)',
+                border: '1px solid rgba(255,255,255,0.06)',
+                borderRadius: '8px',
+                padding: '14px 18px',
+                cursor: 'pointer'
+              }}
+            >
+              <summary style={{ color: '#ffffff', fontWeight: 700, fontSize: '14.5px', userSelect: 'none', listStyle: 'none', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                {item.q}
+                <span style={{ color: '#e53637', fontSize: '20px', lineHeight: 1 }}>+</span>
+              </summary>
+              <p style={{ color: '#9ba3b5', fontSize: '14px', lineHeight: '1.75', marginTop: '10px', marginBottom: 0 }}>{item.a}</p>
+            </details>
+          ))}
+        </div>
+      </>
+    )
+  },
+
+  // ────────── 3. GLOSSÁRIO ──────────
+  {
+    id: 'glossary',
+    category: 'translation',
+    categoryLabel: 'Tradução & Estilo',
+    categoryIcon: <PenLine size={14} />,
+    title: 'Glossário padronizado de DDLC',
+    keywords: 'glossario termos padronizacao literatura clubroom cupcake festival poem panic tradução oficial ddtc',
+    readingTime: 5,
+    difficulty: 'intermediate',
+    toc: [
+      { id: 'glos-intro', label: 'Por que padronizar?' },
+      { id: 'glos-table', label: 'Tabela de termos' },
+      { id: 'glos-nomes', label: 'Nomes próprios e lugares' },
+      { id: 'glos-proibidos', label: 'Termos proibidos' },
+    ],
+    content: (
+      <>
+        <SectionHeading id="glos-intro">Por que padronizar termos?</SectionHeading>
+        <P>
+          Quando vários tradutores trabalham em projetos diferentes (ou diferentes capítulos do mesmo projeto), é natural
+          que os mesmos termos recebam traduções diferentes. Isso quebra a imersão e causa confusão ao jogador que joga
+          mais de um mod.
+        </P>
+        <P>
+          Para evitar isso, a DDTC mantém este glossário como <strong>referência obrigatória</strong>. Todos os tradutores
+          e revisores devem consultá-lo antes de iniciar qualquer projeto.
+        </P>
+        <Callout type="warning" title="Atualizações do Glossário">
+          Este glossário é atualizado periodicamente. Antes de iniciar um novo projeto, confirme com o coordenador de tradução
+          se houve mudanças recentes nos termos listados.
+        </Callout>
+
+        <SectionHeading id="glos-table">Tabela de termos</SectionHeading>
+        <table className="docs-table">
+          <thead>
+            <tr>
+              <th>Inglês (Original)</th>
+              <th>Português (Oficial)</th>
+              <th>Contexto / Regras</th>
+            </tr>
+          </thead>
+          <tbody>
+            {[
+              ['Literature Club', 'Clube de Literatura', 'Iniciais maiúsculas sempre. Nunca abreviar para "CL".'],
+              ['Clubroom', 'Sala do clube', 'Minúsculo. Não traduzir como "sala de reuniões".'],
+              ['Cupcake', 'Cupcake', 'Manter em inglês. Alterar seria culturalmente impreciso.'],
+              ['Poem Panic', 'Pânico dos Poemas', 'Título da música de confronto Natsuki/Yuri.'],
+              ['Festival', 'Festival', 'Minúsculo exceto no início de títulos ou frases.'],
+              ['MC / Player', 'protagonista / jogador', 'Contextual. Em falas formais, use "protagonista".'],
+              ['Route', 'rota', 'Ex: "rota da Sayori". Minúsculo.'],
+              ['Bad Ending', 'Fim Alternativo', 'Nunca usar "fim ruim" — o termo é confuso fora do contexto.'],
+              ['True Ending', 'Desfecho verdadeiro', 'Capitalizar apenas em contexto de título.'],
+              ['Doki Doki', 'Doki Doki', 'Não traduzir. É uma onomatopeia japonesa icônica.'],
+            ].map(([en, pt, note], i) => (
+              <tr key={i}>
+                <td><code>{en}</code></td>
+                <td className="highlight">{pt}</td>
+                <td>{note}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+
+        <SectionHeading id="glos-nomes">Nomes próprios e lugares</SectionHeading>
+        <P>
+          Nomes dos personagens e do jogo <strong>nunca são traduzidos</strong>. Qualquer nome próprio que o mod original
+          apresente (de outros personagens) deve ser mantido no idioma original, exceto em casos onde o próprio criador
+          do mod disponibilizou uma versão traduzida.
+        </P>
+        <table className="docs-table">
+          <thead>
+            <tr>
+              <th>Original</th>
+              <th>Uso correto</th>
+              <th>Uso incorreto</th>
+            </tr>
+          </thead>
+          <tbody>
+            {[
+              ['Sayori', 'Sayori', '"Sayori" ou qualquer variação'],
+              ['Natsuki', 'Natsuki', '"Natsuki-chan" (sufixos japoneses não são adicionados)'],
+              ['Yuri', 'Yuri', '"Yuri" (não confundir com o gênero "yuri")'],
+              ['Monika', 'Monika', '"Monica" (com "c" é grafia errada)'],
+              ['Team Salvato', 'Team Salvato', '"Equipe Salvato" ou "Salvato Studios"'],
+            ].map(([orig, correct, incorrect], i) => (
+              <tr key={i}>
+                <td><strong>{orig}</strong></td>
+                <td><span className="check">✓ {correct}</span></td>
+                <td><span className="cross">✗ {incorrect}</span></td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+
+        <SectionHeading id="glos-proibidos">Termos proibidos</SectionHeading>
+        <P>
+          Alguns termos são especificamente proibidos nas traduções da DDTC por causarem confusão ou por serem considerados
+          inadequados ao tom do jogo original:
+        </P>
+        <ul style={{ color: '#9ba3b5', fontSize: '15px', lineHeight: '2', paddingLeft: '22px' }}>
+          <li><strong>"Anime girl"</strong> — usar "personagem" ou o nome próprio da garota</li>
+          <li><strong>"Suicídio"</strong> — usar "morte de Sayori" ou abordar de forma indireta conforme o contexto</li>
+          <li><strong>"Glitch"</strong> — usar "falha", "corrupção" ou "distorção" dependendo do contexto</li>
+          <li><strong>"Waifu"</strong> — evitar em diálogos formais; apenas em contextos claramente humorísticos</li>
+        </ul>
+      </>
+    )
+  },
+
+  // ────────── 4. GUIA DE ESTILO ──────────
+  {
+    id: 'style-guide',
+    category: 'translation',
+    categoryLabel: 'Tradução & Estilo',
+    categoryIcon: <PenLine size={14} />,
+    title: 'Guia de estilo, voz e pontuação',
+    keywords: 'guia estilo voz escrita personalidade sayori natsuki yuri monika pontuacao tsundere gaguejo exclamacao virgula',
+    readingTime: 8,
+    difficulty: 'intermediate',
+    toc: [
+      { id: 'style-intro', label: 'Filosofia de tradução' },
+      { id: 'style-chars', label: 'Voz de cada personagem' },
+      { id: 'style-punct', label: 'Regras de pontuação' },
+      { id: 'style-typos', label: 'Gaguejos e ênfases' },
+      { id: 'style-examples', label: 'Exemplos antes/depois' },
+    ],
+    content: (
+      <>
+        <SectionHeading id="style-intro">Filosofia de tradução da DDTC</SectionHeading>
+        <P>
+          Nossa filosofia é baseada na tradução <strong>idiomática com fidelidade de tom</strong>. Isso significa que buscamos
+          capturar <em>como a personagem soa</em>, não apenas o que ela diz. Uma tradução literal muitas vezes perde nuances de
+          personalidade que são essenciais para a experiência emocional do jogador.
+        </P>
+        <Callout type="info" title="Regra de Ouro">
+          Se ao ler a tradução em voz alta você não conseguir imaginar a personagem dizendo aquilo, reescreva até conseguir.
+        </Callout>
+
+        <SectionHeading id="style-chars">Voz de cada personagem</SectionHeading>
+        <CharacterCard name="Sayori" badge="Animada / Hesitante" badgeColor="#ffb7c5" borderColor="#ffb7c5">
+          <strong>Registro:</strong> Informal, calorosa, entusiasmada. Usa contrações e expressões populares.
+          <br /><br />
+          <strong>Pontuação característica:</strong> Exclamações frequentes em momentos de animação (<code>!</code>). Reticências (<code>...</code>) 
+          quando está triste, hesitante ou ansiosa. Nunca usa ponto-e-vírgula.
+          <br /><br />
+          <strong>Erros intencionais:</strong> O original ocasionalmente tem erros de digitação leves para reforçar sua natureza
+          distraída. Se aparecer no original, mantenha equivalente em português.
+          <br /><br />
+          <em>Ex: "Eba, você veio mesmo! Eu... eu ia te esperar até fechar o clube, sabe?"</em>
+        </CharacterCard>
+
+        <CharacterCard name="Natsuki" badge="Tsundere / Defensiva" badgeColor="#f3a3b2" borderColor="#f3a3b2">
+          <strong>Registro:</strong> Direto, curto, por vezes agressivo. Frases longas são raras.
+          <br /><br />
+          <strong>Pontuação característica:</strong> Exclamações em sequência (<code>!!</code>, <code>?!</code>). Pausas bruscas
+          indicadas por travessão (<code>—</code>). Em momentos de raiva, use <strong>CAIXA ALTA</strong> conforme o original inglês.
+          <br /><br />
+          <strong>Gaguejos:</strong> Em momentos de vulnerabilidade, ela gagueja: <code>E-eu não me importo com você!</code>. Mantenha
+          o hífen entre a sílaba repetida e a próxima.
+          <br /><br />
+          <em>Ex: "Q-que foi?! Não precisa ficar me olhando assim! Eu NÃO sou fofa, tá?!"</em>
+        </CharacterCard>
+
+        <CharacterCard name="Yuri" badge="Formal / Intelectual" badgeColor="#a3a3d6" borderColor="#a3a3d6">
+          <strong>Registro:</strong> Culto, rebuscado, preciso. Usa vocabulário menos comum e estruturas sintáticas complexas.
+          <br /><br />
+          <strong>Pontuação característica:</strong> Pontuação rigorosamente correta. Vírgulas de aposto, dois pontos para
+          explicações. Hesitações são longas e elaboradas (<code>...aliás...</code>).
+          <br /><br />
+          <strong>Proibições:</strong> Gírias modernas, abreviações, frases sem verbo. O vocabulário de Yuri deve soar
+          ligeiramente mais formal do que a fala cotidiana brasileira.
+          <br /><br />
+          <em>Ex: "Peço que me perdoe... Meu comportamento de agora há pouco foi, de certa forma, inadequado para a ocasião."</em>
+        </CharacterCard>
+
+        <CharacterCard name="Monika" badge="Confiante / Empática" badgeColor="#a8d8a8" borderColor="#2ecc71">
+          <strong>Registro:</strong> Maduro, articulado, acolhedor. Fala diretamente com o jogador; tom de mentora.
+          <br /><br />
+          <strong>Pontuação característica:</strong> Equilibrada. Usa exclamações com moderação. Prefere perguntas retóricas
+          para criar conexão. Parênteses ocasionais para inserir pensamentos laterais.
+          <br /><br />
+          <strong>Contexto 4th wall:</strong> Nas partes em que Monika fala diretamente com o jogador (quebrando a 4ª parede),
+          o tom se torna ainda mais íntimo e pessoal. Adapte para soar como alguém falando com um amigo próximo.
+          <br /><br />
+          <em>Ex: "Seja bem-vindo ao Clube de Literatura! (Ou seria bem-vinda? Não importa, tudo bem assim.)"</em>
+        </CharacterCard>
+
+        <SectionHeading id="style-punct">Regras de pontuação</SectionHeading>
+        <table className="docs-table">
+          <thead>
+            <tr><th>Situação</th><th>Correto</th><th>Errado</th></tr>
+          </thead>
+          <tbody>
+            {[
+              ['Hesitação leve', '"Eu... não sei."', '"Eu não sei."'],
+              ['Hesitação de Yuri', '"Eu... ou melhor... não..."', '"Eu não..."'],
+              ['Grito / Raiva (Natsuki)', '"Isso é RIDÍCULO!"', '"Isso é ridículo!"'],
+              ['Gaguejo', '"E-eu não quero!"', '"Eu-eu não quero!"'],
+              ['Exclamação + Surpresa', '"O quê?!"', '"O quê?!?"'],
+              ['Frase interrompida', '"Eu ia dizer que—"', '"Eu ia dizer que..."'],
+            ].map(([sit, ok, bad], i) => (
+              <tr key={i}>
+                <td>{sit}</td>
+                <td className="check">{ok}</td>
+                <td className="cross">{bad}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+
+        <SectionHeading id="style-typos">Gaguejos e ênfases</SectionHeading>
+        <P>
+          Gaguejos devem ser construídos com hífen separando a sílaba inicial da palavra completa:
+        </P>
+        <CodeBlock lang="exemplo">{`# CORRETO
+"E-eu não me importo com isso!"
+"N-não é o que você está pensando!"
+
+# ERRADO
+"Eu eu não me importo com isso!"
+"N... não é o que está pensando!"`}</CodeBlock>
+
+        <SectionHeading id="style-examples">Exemplos antes/depois</SectionHeading>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+          {[
+            {
+              char: 'Sayori',
+              color: '#ffb7c5',
+              original: '"Hey, I was waiting for you! I thought maybe you weren\'t going to show up..."',
+              wrong: '"Ei, eu estava te esperando! Eu pensei que talvez você não fosse aparecer..."',
+              right: '"Eba, eu tava esperando por você! Eu achei que você não ia aparecer..."',
+              note: 'Mais coloquial, contração de "estava", tom animado mas com hesitação no final.'
+            },
+            {
+              char: 'Yuri',
+              color: '#a3a3d6',
+              original: '"I... apologize. That was rather uncouth of me."',
+              wrong: '"Eu... me desculpo. Isso foi grosseiro da minha parte."',
+              right: '"Peço... desculpa. Comportar-me de tal maneira foi, de certa forma, descortês."',
+              note: '"Descortês" é mais fiel ao tom culto de Yuri do que "grosseiro".'
+            },
+          ].map((ex, i) => (
+            <div
+              key={i}
+              style={{
+                background: 'rgba(255,255,255,0.015)',
+                border: `1px solid rgba(255,255,255,0.06)`,
+                borderRadius: '10px',
+                overflow: 'hidden'
+              }}
+            >
+              <div
+                style={{
+                  padding: '10px 18px',
+                  background: `rgba(255,255,255,0.03)`,
+                  borderBottom: '1px solid rgba(255,255,255,0.05)',
+                  color: ex.color,
+                  fontWeight: 700,
+                  fontSize: '13px'
+                }}
+              >
+                {ex.char}
+              </div>
+              <div style={{ padding: '14px 18px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                <div>
+                  <span style={{ fontSize: '11px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1px', color: 'rgba(255,255,255,0.3)' }}>Original EN</span>
+                  <p style={{ color: '#9ba3b5', margin: '4px 0 0', fontSize: '14px', fontStyle: 'italic' }}>{ex.original}</p>
+                </div>
+                <div>
+                  <span style={{ fontSize: '11px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1px', color: '#e53637' }}>✗ Incorreto</span>
+                  <p style={{ color: '#c07070', margin: '4px 0 0', fontSize: '14px' }}>{ex.wrong}</p>
+                </div>
+                <div>
+                  <span style={{ fontSize: '11px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1px', color: '#2ecc71' }}>✓ Correto</span>
+                  <p style={{ color: '#80c88e', margin: '4px 0 0', fontSize: '14px' }}>{ex.right}</p>
+                </div>
+                <p style={{ color: 'rgba(255,255,255,0.35)', fontSize: '13px', margin: 0, borderTop: '1px solid rgba(255,255,255,0.05)', paddingTop: '8px' }}>
+                  💬 {ex.note}
+                </p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </>
+    )
+  },
+
+  // ────────── 5. PROCESSO DE REVISÃO ──────────
+  {
+    id: 'review-process',
+    category: 'translation',
+    categoryLabel: 'Tradução & Estilo',
+    categoryIcon: <PenLine size={14} />,
+    title: 'Processo de revisão e QA',
+    keywords: 'revisao qa quality assurance qualidade processo etapas pr pull request aprovacao equipe',
+    readingTime: 5,
+    difficulty: 'intermediate',
+    toc: [
+      { id: 'qa-overview', label: 'Visão geral do processo' },
+      { id: 'qa-stages', label: 'Etapas de revisão' },
+      { id: 'qa-checklist', label: 'Checklist do revisor' },
+    ],
+    content: (
+      <>
+        <SectionHeading id="qa-overview">Visão geral do processo</SectionHeading>
+        <P>
+          Todo mod traduzido pela DDTC passa por um processo de revisão em múltiplas etapas antes de ser publicado no acervo.
+          Nenhuma tradução é publicada diretamente pelo tradutor — ela sempre precisa da aprovação de pelo menos um revisor.
+        </P>
+
+        <SectionHeading id="qa-stages">Etapas de revisão</SectionHeading>
+        <Steps items={[
+          {
+            title: 'Tradução inicial (Translator)',
+            body: 'O tradutor trabalha nos scripts .rpy, traduzindo todas as strings marcadas. Ao concluir, abre um Pull Request (PR) no repositório do projeto para revisão.'
+          },
+          {
+            title: 'Revisão linguística (Language Reviewer)',
+            body: 'Um revisor de idioma lê toda a tradução buscando erros gramaticais, inconsistências com o glossário e quebra de voz dos personagens. Os comentários são feitos diretamente no PR.'
+          },
+          {
+            title: 'QA de jogo (Game QA)',
+            body: (
+              <>
+                Um testador instala a versão em revisão e joga o mod completo, verificando:
+                <ul style={{ marginTop: '10px', paddingLeft: '20px', color: '#9ba3b5', lineHeight: '2' }}>
+                  <li>Textos que ultrapassam a caixa de diálogo</li>
+                  <li>Erros de encoding (caracteres estranhos ou ??)</li>
+                  <li>Linhas que ficaram em inglês por acidente</li>
+                  <li>Sincronização de áudio com lipsync (quando aplicável)</li>
+                </ul>
+              </>
+            )
+          },
+          {
+            title: 'Aprovação e publicação',
+            body: 'Com o PR aprovado por pelo menos um Language Reviewer e um Game QA sem erros pendentes, o coordenador mergea o PR e o mod é adicionado ao acervo do site.'
+          }
+        ]} />
+
+        <SectionHeading id="qa-checklist">Checklist do revisor</SectionHeading>
+        <P>Use esta lista ao revisar qualquer tradução:</P>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginTop: '10px' }}>
+          {[
+            'Todos os termos do glossário estão sendo usados corretamente?',
+            'A voz de cada personagem está preservada (registro, pontuação, vocabulário)?',
+            'Gaguejos e ênfases estão formatados corretamente (hífen, CAIXA ALTA)?',
+            'Não há nenhuma linha que ficou em inglês acidentalmente?',
+            'Reticências usam três pontos literais (...) e não o caractere Unicode (…)?',
+            'Nomes próprios (personagens, jogo, empresa) estão corretos?',
+            'A tradução não adiciona informação que não existe no original?',
+            'Piadas ou referências culturais foram adaptadas de forma compreensível para o PT-BR?',
+          ].map((item, i) => (
+            <div
+              key={i}
+              style={{
+                display: 'flex',
+                alignItems: 'flex-start',
+                gap: '12px',
+                padding: '12px 16px',
+                background: 'rgba(255,255,255,0.02)',
+                border: '1px solid rgba(255,255,255,0.05)',
+                borderRadius: '8px',
+                color: '#9ba3b5',
+                fontSize: '14px',
+                lineHeight: '1.6'
+              }}
+            >
+              <span style={{
+                width: '20px',
+                height: '20px',
+                border: '2px solid rgba(229,54,55,0.4)',
+                borderRadius: '4px',
+                flexShrink: 0,
+                marginTop: '1px'
+              }} />
+              {item}
+            </div>
+          ))}
+        </div>
+      </>
+    )
+  },
+
+  // ────────── 6. FAQ ──────────
+  {
+    id: 'faq',
+    category: 'faq',
+    categoryLabel: 'Perguntas Frequentes',
+    categoryIcon: <HelpCircle size={14} />,
+    title: 'FAQ — Dúvidas mais comuns',
+    keywords: 'faq duvidas perguntas frequentes oficiais salvato copyright monibot bug erro sugestao discord',
+    readingTime: 4,
+    difficulty: 'beginner',
+    toc: [
+      { id: 'faq-official', label: 'As traduções são oficiais?' },
+      { id: 'faq-report', label: 'Como reportar erros?' },
+      { id: 'faq-join', label: 'Como entrar para a equipe?' },
+      { id: 'faq-request', label: 'Posso pedir um mod para traduzir?' },
+    ],
+    content: (
+      <>
+        <SectionHeading id="faq-official">As traduções são oficiais?</SectionHeading>
+        <P>
+          Não. A Doki Doki Translate Company é um grupo de fãs voluntários, sem afiliação ou endosso da Team Salvato.
+          Todo o conteúdo é criado exclusivamente por e para a comunidade, sem fins lucrativos.
+        </P>
+        <P>
+          Seguimos rigorosamente as <strong>IP Guidelines da Team Salvato</strong>:
+        </P>
+        <ul style={{ color: '#9ba3b5', fontSize: '15px', lineHeight: '2', paddingLeft: '22px' }}>
+          <li>Nenhuma tradução é vendida ou monetizada</li>
+          <li>Todos os mods requerem o jogo original para funcionar</li>
+          <li>Não criamos conteúdo que contradiga o conteúdo canônico da Team Salvato</li>
+        </ul>
+
+        <SectionHeading id="faq-report">Como reportar erros ou sugerir melhorias?</SectionHeading>
+        <P>Existem três formas de enviar um reporte:</P>
+        <table className="docs-table">
+          <thead>
+            <tr><th>Canal</th><th>Quando usar</th><th>Tempo de resposta</th></tr>
+          </thead>
+          <tbody>
+            {[
+              ['MoniBot (chatbot)', 'Erros pontuais em tradução, sugestões rápidas', '24–48h'],
+              ['Página do mod', 'Erros específicos de um mod com contexto', '24–72h'],
+              ['Servidor do Discord', 'Discussões gerais, sugestões complexas, bugs de APK', 'Variável'],
+            ].map(([canal, quando, tempo], i) => (
+              <tr key={i}>
+                <td><strong>{canal}</strong></td>
+                <td>{quando}</td>
+                <td style={{ color: '#ffb13c' }}>{tempo}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+
+        <SectionHeading id="faq-join">Como entrar para a equipe?</SectionHeading>
+        <P>
+          Estamos sempre recrutando novos membros! Acesse a página de <strong>Recrutamento</strong> no menu superior para
+          ver as vagas abertas. As posições disponíveis geralmente incluem:
+        </P>
+        <ul style={{ color: '#9ba3b5', fontSize: '15px', lineHeight: '2', paddingLeft: '22px' }}>
+          <li><strong>Tradutor</strong> — tradução de scripts .rpy do inglês para PT-BR</li>
+          <li><strong>Revisor</strong> — revisão linguística e QA de jogo</li>
+          <li><strong>Porteiro Android</strong> — compilação de APKs com Ren'Py</li>
+          <li><strong>Designer Gráfico</strong> — criação de banners, thumbnails e assets</li>
+        </ul>
+        <Callout type="tip" title="Dica para candidatos">
+          Candidatos com experiência em Ren'Py, Japanese-to-English fan translations ou familiaridade com o canon de DDLC
+          têm prioridade, mas iniciantes comprometidos são igualmente bem-vindos!
+        </Callout>
+
+        <SectionHeading id="faq-request">Posso pedir um mod para traduzir?</SectionHeading>
+        <P>
+          Sim! Use o MoniBot (opção "💡 Sugerir mod para tradução") ou abra um ticket no Discord. A equipe avalia cada
+          sugestão com base em critérios como popularidade do mod, viabilidade técnica e disponibilidade de tradutores.
+          Não garantimos que todo mod sugerido será traduzido, mas todas as sugestões são registradas e consideradas.
+        </P>
+      </>
+    )
+  }
+];
+
+// ─────────────────────────────────────────────────────────────
+// MAIN COMPONENT
+// ─────────────────────────────────────────────────────────────
 export const Tutoriais: React.FC = () => {
-  const [activeArticleId, setActiveArticleId] = useState<string>('pc-install');
-  const [searchQuery, setSearchQuery] = useState<string>('');
+  const [activeId, setActiveId] = useState<string>(ARTICLES[0].id);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [activeTocId, setActiveTocId] = useState<string>('');
+  const [scrollProgress, setScrollProgress] = useState(0);
+  const [feedbackGiven, setFeedbackGiven] = useState<Record<string, 'yes' | 'no' | null>>({});
+  const mainRef = useRef<HTMLElement>(null);
 
-  const articles: Article[] = [
-    {
-      id: 'pc-install',
-      category: 'install',
-      categoryLabel: 'Instalação de Mods',
-      title: 'Como Instalar no PC (Steam & Standalone)',
-      keywords: 'instalacao pc steam standalone game copiar extrair winrar zip rar pasta game ddlc.exe',
-      content: (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-          <h1 style={{ color: '#ffffff', fontSize: '32px', fontWeight: 800, marginBottom: '5px' }}>Instalação de Mods no PC</h1>
-          <p style={{ color: '#b7b7b7', fontSize: '16px', lineHeight: '28px' }}>
-            Doki Doki Literature Club possui uma comunidade gigante de modificações. Instalar esses mods no seu computador é simples, mas requer a estrutura de pastas correta para funcionar sem erros.
-          </p>
+  // Scroll progress bar
+  useEffect(() => {
+    const handleScroll = () => {
+      const el = mainRef.current;
+      if (!el) return;
+      const scrollTop = window.scrollY - (el.offsetTop - 96);
+      const total = el.scrollHeight - window.innerHeight;
+      setScrollProgress(Math.min(100, Math.max(0, (scrollTop / total) * 100)));
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [activeId]);
 
-          <div style={{ background: 'rgba(229, 54, 55, 0.1)', borderLeft: '4px solid #e53637', padding: '16px', borderRadius: '4px', margin: '10px 0' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', color: '#e53637', fontWeight: 700, marginBottom: '8px', fontSize: '15px' }}>
-              <AlertCircle size={20} />
-              <span>CUIDADO COM A VERSÃO DA STEAM</span>
-            </div>
-            <p style={{ margin: 0, color: '#e2d3d3', fontSize: '14.5px', lineHeight: '24px' }}>
-              Não recomendamos instalar mods diretamente na pasta do jogo da Steam. A Steam sincroniza arquivos constantemente e pode apagar ou corromper a tradução. Use sempre uma cópia limpa do jogo (Standalone).
-            </p>
-          </div>
+  // Highlight active TOC entry on scroll
+  useEffect(() => {
+    const article = ARTICLES.find(a => a.id === activeId);
+    if (!article || !article.toc.length) return;
+    const handleScroll = () => {
+      const ids = article.toc.map(t => t.id);
+      for (let i = ids.length - 1; i >= 0; i--) {
+        const el = document.getElementById(ids[i]);
+        if (el && el.getBoundingClientRect().top <= 130) {
+          setActiveTocId(ids[i]);
+          return;
+        }
+      }
+      setActiveTocId(ids[0]);
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll();
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [activeId]);
 
-          <h3 style={{ color: '#ffffff', fontSize: '20px', fontWeight: 700, marginTop: '15px', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '8px' }}>Passo 1: Baixar a versão limpa do DDLC</h3>
-          <p style={{ color: '#b7b7b7', lineHeight: '26px' }}>
-            Baixe a versão original para computadores direto do site oficial da Team Salvato: <a href="https://ddlc.moe" target="_blank" rel="noopener noreferrer" style={{ color: '#e53637', textDecoration: 'underline', fontWeight: 600 }}>ddlc.moe</a>. O jogo é gratuito.
-          </p>
+  const navigateTo = useCallback((id: string) => {
+    setActiveId(id);
+    setActiveTocId('');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, []);
 
-          <h3 style={{ color: '#ffffff', fontSize: '20px', fontWeight: 700, marginTop: '15px', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '8px' }}>Passo 2: Extrair o jogo original</h3>
-          <p style={{ color: '#b7b7b7', lineHeight: '26px' }}>
-            Extraia o arquivo baixado em um diretório fora das pastas protegidas do sistema (evite colar na pasta <code>C:\Arquivos de Programas</code> para não haver problemas de permissões de administrador). Um bom local é <code>C:\Jogos\DDLC\</code>.
-          </p>
-
-          <h3 style={{ color: '#ffffff', fontSize: '20px', fontWeight: 700, marginTop: '15px', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '8px' }}>Passo 3: Instalar o mod</h3>
-          <ol style={{ paddingLeft: '20px', color: '#b7b7b7', lineHeight: '28px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-            <li>Baixe o mod/tradução desejado do nosso acervo.</li>
-            <li>Extraia o mod usando o WinRAR ou 7-Zip.</li>
-            <li>Copie todos os arquivos extraídos do mod.</li>
-            <li>Cole-os <strong>dentro da pasta <code>game</code></strong> localizada na raiz da pasta do seu DDLC limpo.</li>
-            <li>Quando o Windows perguntar, confirme a substituição dos arquivos originais.</li>
-          </ol>
-
-          <div style={{ background: 'rgba(54, 162, 235, 0.1)', borderLeft: '4px solid #36a2eb', padding: '16px', borderRadius: '4px', margin: '10px 0' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', color: '#36a2eb', fontWeight: 700, marginBottom: '8px', fontSize: '15px' }}>
-              <Info size={20} />
-              <span>DICA DE EXECUÇÃO</span>
-            </div>
-            <p style={{ margin: 0, color: '#d3e2ee', fontSize: '14.5px', lineHeight: '24px' }}>
-              Após colar os arquivos, inicie o jogo pelo arquivo executável principal da pasta raiz (<code>DDLC.exe</code> no Windows). Nunca tente abrir o jogo por atalhos antigos da Steam.
-            </p>
-          </div>
-        </div>
-      )
-    },
-    {
-      id: 'android-install',
-      category: 'install',
-      categoryLabel: 'Instalação de Mods',
-      title: 'Como Instalar no Android (APK)',
-      keywords: 'portes android apk celular smartphone protect seguranca fontes desconhecidas instalar telefone mobile',
-      content: (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-          <h1 style={{ color: '#ffffff', fontSize: '32px', fontWeight: 800, marginBottom: '5px' }}>Portes para Android (APK)</h1>
-          <p style={{ color: '#b7b7b7', fontSize: '16px', lineHeight: '28px' }}>
-            Para que você possa jogar em qualquer lugar, nossa equipe faz o porte de vários mods de DDLC para celular, compilando-os como aplicativos Android (<code>.apk</code>).
-          </p>
-
-          <h3 style={{ color: '#ffffff', fontSize: '20px', fontWeight: 700, marginTop: '15px', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '8px' }}>Como Instalar:</h3>
-          <ol style={{ paddingLeft: '20px', color: '#b7b7b7', lineHeight: '28px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
-            <li>Acesse a página do mod e toque no botão <strong>Download APK (Android)</strong>.</li>
-            <li>Aguarde o download do arquivo no seu celular.</li>
-            <li>Abra o gerenciador de arquivos do celular ou os downloads do navegador e toque no arquivo APK.</li>
-            <li>Toque em <strong>Instalar</strong>.</li>
-          </ol>
-
-          <div style={{ background: 'rgba(229, 54, 55, 0.1)', borderLeft: '4px solid #e53637', padding: '16px', borderRadius: '4px', margin: '10px 0' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', color: '#e53637', fontWeight: 700, marginBottom: '8px', fontSize: '15px' }}>
-              <AlertCircle size={20} />
-              <span>PERMISSÕES DE FONTES DESCONHECIDAS</span>
-            </div>
-            <p style={{ margin: 0, color: '#e2d3d3', fontSize: '14.5px', lineHeight: '24px' }}>
-              Se for a sua primeira vez instalando um arquivo baixado fora da Play Store, o Android pedirá que você ative a permissão de "Fontes Desconhecidas" nas configurações de segurança do aparelho ou autorize o navegador a instalar apps.
-            </p>
-          </div>
-
-          <h3 style={{ color: '#ffffff', fontSize: '20px', fontWeight: 700, marginTop: '15px', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '8px' }}>Aviso do Google Play Protect</h3>
-          <p style={{ color: '#b7b7b7', lineHeight: '26px' }}>
-            Por se tratar de um aplicativo independente (criado por fãs usando a engine Ren'Py), o Google Protect pode mostrar uma tela amarela ou vermelha com o aviso "App desconhecido bloqueado". 
-            Basta clicar em <strong>"Mais detalhes"</strong> e em seguida em <strong>"Instalar assim mesmo"</strong>. Garantimos que os portes de tradução são livres de vírus ou scripts nocivos ao aparelho.
-          </p>
-        </div>
-      )
-    },
-    {
-      id: 'glossary',
-      category: 'translation',
-      categoryLabel: 'Tradução & Estilo',
-      title: 'Glossário Padronizado (Termos Oficiais)',
-      keywords: 'glossario termos tradução padronização literatura clubroom cupcake festival poem panic oficial',
-      content: (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-          <h1 style={{ color: '#ffffff', fontSize: '32px', fontWeight: 800, marginBottom: '5px' }}>Glossário de Termos de DDLC</h1>
-          <p style={{ color: '#b7b7b7', fontSize: '16px', lineHeight: '28px' }}>
-            Para garantir consistência linguística e imersão em todo o nosso acervo de traduções, os membros da Doki Doki Translate Company devem adotar obrigatoriamente a seguinte padronização de termos:
-          </p>
-
-          <div style={{ overflowX: 'auto', marginTop: '10px' }}>
-            <table style={{ width: '100%', borderCollapse: 'collapse', color: '#b7b7b7', fontSize: '15px' }}>
-              <thead>
-                <tr style={{ borderBottom: '2px solid rgba(255,255,255,0.1)', color: '#ffffff' }}>
-                  <th style={{ padding: '12px 15px', textAlign: 'left' }}>Inglês (Original)</th>
-                  <th style={{ padding: '12px 15px', textAlign: 'left' }}>Português (Oficial)</th>
-                  <th style={{ padding: '12px 15px', textAlign: 'left' }}>Notas e Contexto</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-                  <td style={{ padding: '12px 15px', fontWeight: 700, color: '#ffffff' }}>Literature Club</td>
-                  <td style={{ padding: '12px 15px', color: '#e53637', fontWeight: 600 }}>Clube de Literatura</td>
-                  <td style={{ padding: '12px 15px' }}>Sempre usar letras iniciais maiúsculas.</td>
-                </tr>
-                <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-                  <td style={{ padding: '12px 15px', fontWeight: 700, color: '#ffffff' }}>Clubroom</td>
-                  <td style={{ padding: '12px 15px', color: '#e53637', fontWeight: 600 }}>Sala do clube</td>
-                  <td style={{ padding: '12px 15px' }}>Refere-se à sala onde as garotas se reúnem.</td>
-                </tr>
-                <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-                  <td style={{ padding: '12px 15px', fontWeight: 700, color: '#ffffff' }}>Cupcake</td>
-                  <td style={{ padding: '12px 15px', color: '#e53637', fontWeight: 600 }}>Cupcake</td>
-                  <td style={{ padding: '12px 15px' }}>Manter a palavra em inglês devido à fixação cultural do termo.</td>
-                </tr>
-                <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-                  <td style={{ padding: '12px 15px', fontWeight: 700, color: '#ffffff' }}>Poem Panic</td>
-                  <td style={{ padding: '12px 15px', color: '#e53637', fontWeight: 600 }}>Pânico dos Poemas</td>
-                  <td style={{ padding: '12px 15px' }}>Música tema da discussão entre Natsuki e Yuri.</td>
-                </tr>
-                <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-                  <td style={{ padding: '12px 15px', fontWeight: 700, color: '#ffffff' }}>Festival</td>
-                  <td style={{ padding: '12px 15px', color: '#e53637', fontWeight: 600 }}>Festival</td>
-                  <td style={{ padding: '12px 15px' }}>Geralmente grafado em minúsculo, exceto em títulos de eventos.</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      )
-    },
-    {
-      id: 'style-guide',
-      category: 'translation',
-      categoryLabel: 'Tradução & Estilo',
-      title: 'Guia de Estilo de Escrita e Pontuação',
-      keywords: 'guia estilo escrita personalidade garotas sayori natsuki yuri monika pontuacao tsundere gaguejo exclamacao',
-      content: (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-          <h1 style={{ color: '#ffffff', fontSize: '32px', fontWeight: 800, marginBottom: '5px' }}>Guia de Estilo de Escrita</h1>
-          <p style={{ color: '#b7b7b7', fontSize: '16px', lineHeight: '28px' }}>
-            Cada integrante do Clube de Literatura possui uma personalidade e uma forma única de falar. A tradução deve manter essa essência viva.
-          </p>
-
-          <h3 style={{ color: '#ffffff', fontSize: '20px', fontWeight: 700, marginTop: '15px', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '8px' }}>Estilo das Falas:</h3>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '15px', marginTop: '10px' }}>
-            <div style={{ background: 'rgba(255, 255, 255, 0.02)', padding: '15px', borderRadius: '6px', borderLeft: '3px solid #ffb7c5' }}>
-              <span style={{ color: '#ffb7c5', fontWeight: 700, display: 'block', marginBottom: '5px', fontSize: '15px' }}>Sayori:</span>
-              <p style={{ margin: 0, color: '#b7b7b7', fontSize: '14px', lineHeight: '24px' }}>
-                Falas animadas e informais. Usa exclamações frequentemente (<code>!</code>) e pontuações hesitantes como reticências (<code>...</code>) quando está tímida ou triste. Ex: *"Eba! Fico tão feliz por você ter vindo!"*
-              </p>
-            </div>
-            
-            <div style={{ background: 'rgba(255, 255, 255, 0.02)', padding: '15px', borderRadius: '6px', borderLeft: '3px solid #f3a3b2' }}>
-              <span style={{ color: '#f3a3b2', fontWeight: 700, display: 'block', marginBottom: '5px', fontSize: '15px' }}>Natsuki:</span>
-              <p style={{ margin: 0, color: '#b7b7b7', fontSize: '14px', lineHeight: '24px' }}>
-                Tom defensivo, impaciente e tsundere. Usa frases curtas, exclamações rápidas e gaguejos (<code>m-mas</code>, <code>o-o quê?</code>). Em momentos de raiva, use caixa alta conforme o original. Ex: *"Eu NÃO sou fofa!"*
-              </p>
-            </div>
-
-            <div style={{ background: 'rgba(255, 255, 255, 0.02)', padding: '15px', borderRadius: '6px', borderLeft: '3px solid #a3a3d6' }}>
-              <span style={{ color: '#a3a3d6', fontWeight: 700, display: 'block', marginBottom: '5px', fontSize: '15px' }}>Yuri:</span>
-              <p style={{ margin: 0, color: '#b7b7b7', fontSize: '14px', lineHeight: '24px' }}>
-                Vocabulário requintado, culto e formal. Evite gírias modernas. Uso correto de mesóclises e pronomes de tratamento. Expressa hesitação longa. Ex: *"Peço desculpas... Meu comportamento foi um tanto quanto inadequado."*
-              </p>
-            </div>
-
-            <div style={{ background: 'rgba(255, 255, 255, 0.02)', padding: '15px', borderRadius: '6px', borderLeft: '3px solid #2ecc71' }}>
-              <span style={{ color: '#2ecc71', fontWeight: 700, display: 'block', marginBottom: '5px', fontSize: '15px' }}>Monika:</span>
-              <p style={{ margin: 0, color: '#b7b7b7', fontSize: '14px', lineHeight: '24px' }}>
-                Madura, articulada e confiante. Foca no jogador/MC com empatia e carisma. Tom de liderança intelectual. Ex: *"Lembre-se de salvar o jogo com frequência, tudo bem?"*
-              </p>
-            </div>
-          </div>
-        </div>
-      )
-    },
-    {
-      id: 'faq-1',
-      category: 'faq',
-      categoryLabel: 'Perguntas Frequentes',
-      title: 'As traduções são oficiais?',
-      keywords: 'oficiais salvato original livre copyright guidelines legal regras de fa',
-      content: (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-          <h1 style={{ color: '#ffffff', fontSize: '32px', fontWeight: 800, marginBottom: '5px' }}>Oficialidade das Traduções</h1>
-          <p style={{ color: '#b7b7b7', fontSize: '16px', lineHeight: '28px' }}>
-            Esta é uma das perguntas mais comuns que recebemos na comunidade.
-          </p>
-
-          <h3 style={{ color: '#ffffff', fontSize: '20px', fontWeight: 700, marginTop: '15px', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '8px' }}>Diretrizes da Team Salvato:</h3>
-          <p style={{ color: '#b7b7b7', lineHeight: '26px' }}>
-            Nenhum dos mods listados em nosso acervo é oficial ou filiado à Team Salvato. Todos os mods e suas traduções são criados estritamente por fãs voluntários e sem fins lucrativos.
-          </p>
-          <p style={{ color: '#b7b7b7', lineHeight: '26px' }}>
-            Nós seguimos rigorosamente a <strong>IP Guidelines (Diretrizes de Propriedade Intelectual) da Team Salvato</strong>, o que significa que nunca cobramos downloads e apenas traduzimos mods que exigem o jogo original limpo para funcionar, preservando os direitos autorais oficiais.
-          </p>
-        </div>
-      )
-    },
-    {
-      id: 'faq-2',
-      category: 'faq',
-      categoryLabel: 'Perguntas Frequentes',
-      title: 'Como reportar erros ou sugerir melhorias?',
-      keywords: 'reportar report bug erros correcoes melhorias monibot sugestao discord ticket',
-      content: (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-          <h1 style={{ color: '#ffffff', fontSize: '32px', fontWeight: 800, marginBottom: '5px' }}>Sugestões e Reportes de Erros</h1>
-          <p style={{ color: '#b7b7b7', fontSize: '16px', lineHeight: '28px' }}>
-            Sua ajuda é crucial para mantermos o acervo com a maior qualidade de tradução possível!
-          </p>
-
-          <h3 style={{ color: '#ffffff', fontSize: '20px', fontWeight: 700, marginTop: '15px', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '8px' }}>Métodos de Envio:</h3>
-          <ul style={{ paddingLeft: '20px', color: '#b7b7b7', lineHeight: '28px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
-            <li>
-              <strong>Pelo Chatbot (MoniBot):</strong> Clique no ícone de chat no canto inferior direito do site em qualquer página e selecione **"📝 Reportar erro de revisão"**. Siga as etapas rápidas.
-            </li>
-            <li>
-              <strong>Pela Página do Mod:</strong> Vá na página do mod em que encontrou um erro e clique no botão **"Sugerir Revisão"** ao lado dos downloads. A MoniBot já abrirá sabendo o nome do mod automaticamente.
-            </li>
-            <li>
-              <strong>Pelo Discord:</strong> Entre no nosso servidor e poste um print/sugestão no canal de discussões ou abra um ticket.
-            </li>
-          </ul>
-        </div>
-      )
-    }
-  ];
-
-  // Filtering based on search query
-  const filteredArticles = articles.filter(article => {
-    const query = searchQuery.toLowerCase().trim();
-    if (!query) return true;
+  // Filter articles by search query
+  const filtered = ARTICLES.filter(a => {
+    const q = searchQuery.toLowerCase().trim();
+    if (!q) return true;
     return (
-      article.title.toLowerCase().includes(query) ||
-      article.categoryLabel.toLowerCase().includes(query) ||
-      article.keywords.toLowerCase().includes(query)
+      a.title.toLowerCase().includes(q) ||
+      a.categoryLabel.toLowerCase().includes(q) ||
+      a.keywords.toLowerCase().includes(q)
     );
   });
 
-  // Group filtered articles by category for the sidebar
-  const categoriesMap = filteredArticles.reduce((acc, article) => {
-    if (!acc[article.category]) {
-      acc[article.category] = {
-        label: article.categoryLabel,
-        items: []
-      };
-    }
-    acc[article.category].items.push(article);
+  // Group filtered articles by category
+  const groups = filtered.reduce((acc, art) => {
+    if (!acc[art.category]) acc[art.category] = { label: art.categoryLabel, icon: art.categoryIcon, items: [] };
+    acc[art.category].items.push(art);
     return acc;
-  }, {} as Record<string, { label: string; items: Article[] }>);
+  }, {} as Record<string, { label: string; icon: React.ReactNode; items: Article[] }>);
 
-  // If active article was filtered out, default to the first filtered article if available
-  const currentArticle = filteredArticles.find(a => a.id === activeArticleId) || filteredArticles[0];
+  // Determine current article (might be filtered out)
+  const currentArticle = filtered.find(a => a.id === activeId) || filtered[0] || null;
 
-  const currentArticleIndex = articles.findIndex(a => a.id === (currentArticle?.id || ''));
-  const nextArticle = currentArticleIndex < articles.length - 1 ? articles[currentArticleIndex + 1] : null;
-  const prevArticle = currentArticleIndex > 0 ? articles[currentArticleIndex - 1] : null;
+  // Prev / Next (from full list, not filtered)
+  const allIdx = ARTICLES.findIndex(a => a.id === currentArticle?.id);
+  const prevArticle = allIdx > 0 ? ARTICLES[allIdx - 1] : null;
+  const nextArticle = allIdx < ARTICLES.length - 1 ? ARTICLES[allIdx + 1] : null;
+
+  const difficultyLabel = { beginner: 'Iniciante', intermediate: 'Intermediário', advanced: 'Avançado' };
 
   return (
     <>
-      <Seo 
-        title={currentArticle ? `${currentArticle.title} - Central de Guias` : "Central de Guias"}
-        description={currentArticle ? `Guia de ${currentArticle.title} no memorial da Doki Doki Translate Company.` : "Central de tutoriais e ajuda da Doki Doki Translate Company."}
+      <Seo
+        title={currentArticle ? `${currentArticle.title} — Central de Guias` : 'Central de Guias & Documentação'}
+        description="Central de tutoriais, guias de instalação de mods e documentação da Doki Doki Translate Company."
         canonicalPath="/tutoriais"
       />
 
-      <div style={{ display: 'flex', background: '#0b0c2a', minHeight: 'calc(100vh - 96px)', color: '#ffffff' }}>
-        
-        {/* LEFT SIDEBAR (Discord Guide TOC style) */}
-        <aside 
-          style={{
-            width: '290px',
-            background: '#07071a',
-            borderRight: '1px solid rgba(255, 255, 255, 0.05)',
-            padding: '25px 15px',
-            position: 'sticky',
-            top: '96px',
-            height: 'calc(100vh - 96px)',
-            overflowY: 'auto',
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '20px',
-            flexShrink: 0
-          }}
-          className="discord-guide-sidebar"
-        >
-          {/* SEARCH BAR */}
-          <div style={{ position: 'relative', width: '100%' }}>
+      {/* Reading progress bar */}
+      <div className="docs-progress-bar" style={{ width: `${scrollProgress}%` }} />
+
+      <div className="docs-layout">
+        {/* ═══════════════ LEFT SIDEBAR ═══════════════ */}
+        <aside className="docs-sidebar">
+          {/* Search */}
+          <div className="docs-search-wrapper">
+            <Search size={15} className="docs-search-icon" />
             <input
               type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              className="docs-search-input"
               placeholder="Pesquisar guias..."
-              style={{
-                width: '100%',
-                background: 'rgba(255, 255, 255, 0.04)',
-                border: '1px solid rgba(255, 255, 255, 0.08)',
-                borderRadius: '6px',
-                padding: '10px 12px 10px 38px',
-                color: '#ffffff',
-                fontSize: '13.5px',
-                outline: 'none',
-                transition: 'all 0.3s'
-              }}
-              onFocus={(e) => {
-                e.currentTarget.style.borderColor = '#e53637';
-                e.currentTarget.style.background = 'rgba(255, 255, 255, 0.07)';
-              }}
-              onBlur={(e) => {
-                e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.08)';
-                e.currentTarget.style.background = 'rgba(255, 255, 255, 0.04)';
-              }}
-            />
-            <Search 
-              size={16} 
-              style={{ 
-                position: 'absolute', 
-                left: '12px', 
-                top: '50%', 
-                transform: 'translateY(-50%)', 
-                color: 'rgba(255, 255, 255, 0.35)' 
-              }} 
+              value={searchQuery}
+              onChange={e => setSearchQuery(e.target.value)}
             />
           </div>
 
-          {/* SIDEBAR NAVIGATION ITEMS */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-            {filteredArticles.length === 0 ? (
-              <div style={{ color: 'rgba(255,255,255,0.4)', fontSize: '13px', textAlign: 'center', padding: '20px 0' }}>
-                Nenhum guia encontrado.
-              </div>
-            ) : (
-              Object.entries(categoriesMap).map(([catId, cat]) => (
-                <div key={catId} style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                  {/* Category Header */}
-                  <div 
-                    style={{ 
-                      color: 'rgba(255, 255, 255, 0.35)', 
-                      fontWeight: 800, 
-                      fontSize: '11px', 
-                      letterSpacing: '1.2px', 
-                      textTransform: 'uppercase',
-                      paddingLeft: '10px',
-                      marginBottom: '4px'
-                    }}
-                  >
-                    {cat.label}
-                  </div>
-
-                  {/* Links under category */}
-                  {cat.items.map((art) => (
-                    <button
-                      key={art.id}
-                      onClick={() => setActiveArticleId(art.id)}
-                      style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'space-between',
-                        width: '100%',
-                        background: currentArticle?.id === art.id ? 'rgba(229, 54, 55, 0.1)' : 'transparent',
-                        color: currentArticle?.id === art.id ? '#e53637' : '#b7b7b7',
-                        border: 'none',
-                        borderRadius: '4px',
-                        padding: '10px 12px',
-                        fontSize: '13.5px',
-                        fontWeight: currentArticle?.id === art.id ? 700 : 500,
-                        textAlign: 'left',
-                        cursor: 'pointer',
-                        transition: 'all 0.2s ease',
-                      }}
-                      onMouseEnter={(e) => {
-                        if (currentArticle?.id !== art.id) {
-                          e.currentTarget.style.color = '#ffffff';
-                          e.currentTarget.style.background = 'rgba(255, 255, 255, 0.03)';
-                        }
-                      }}
-                      onMouseLeave={(e) => {
-                        if (currentArticle?.id !== art.id) {
-                          e.currentTarget.style.color = '#b7b7b7';
-                          e.currentTarget.style.background = 'transparent';
-                        }
-                      }}
-                    >
-                      <span style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', marginRight: '5px' }}>
-                        {art.title}
-                      </span>
-                      {currentArticle?.id === art.id && <ChevronRight size={14} style={{ flexShrink: 0 }} />}
-                    </button>
-                  ))}
+          {filtered.length === 0 ? (
+            <div className="docs-empty">Nenhum guia encontrado para<br /><strong>"{searchQuery}"</strong></div>
+          ) : (
+            Object.entries(groups).map(([catId, cat]) => (
+              <div key={catId}>
+                <div className="docs-category-header">
+                  <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+                    {cat.icon} {cat.label}
+                  </span>
                 </div>
-              ))
-            )}
-          </div>
+                {cat.items.map(art => (
+                  <button
+                    key={art.id}
+                    className={`docs-nav-link ${currentArticle?.id === art.id ? 'active' : ''}`}
+                    onClick={() => navigateTo(art.id)}
+                  >
+                    <span className="docs-nav-link-text">{art.title}</span>
+                    {currentArticle?.id === art.id && <ChevronRight size={13} style={{ flexShrink: 0 }} />}
+                  </button>
+                ))}
+              </div>
+            ))
+          )}
         </aside>
 
-        {/* MAIN CONTENT AREA */}
-        <main 
-          style={{
-            flex: 1,
-            padding: '40px 60px 80px 60px',
-            maxWidth: '900px',
-            margin: '0 auto',
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '20px'
-          }}
-        >
-          {currentArticle ? (
+        {/* ═══════════════ MAIN CONTENT ═══════════════ */}
+        <main className="docs-main" ref={mainRef}>
+          {!currentArticle ? (
+            <div style={{ textAlign: 'center', padding: '80px 0', color: 'rgba(255,255,255,0.35)' }}>
+              <BookOpen size={42} style={{ marginBottom: '18px', opacity: 0.3 }} />
+              <h3 style={{ color: '#ffffff' }}>Nenhum artigo encontrado</h3>
+              <p>Tente um termo diferente na busca.</p>
+            </div>
+          ) : (
             <>
-              {/* Breadcrumbs */}
-              <nav 
-                style={{ 
-                  display: 'flex', 
-                  alignItems: 'center', 
-                  gap: '8px', 
-                  fontSize: '13px', 
-                  color: 'rgba(255, 255, 255, 0.4)',
-                  fontWeight: 500 
-                }}
-              >
+              {/* Breadcrumb */}
+              <nav className="docs-breadcrumb">
                 <span>Central de Guias</span>
                 <ChevronRight size={12} />
                 <span>{currentArticle.categoryLabel}</span>
                 <ChevronRight size={12} />
-                <span style={{ color: '#ffffff' }}>{currentArticle.title}</span>
+                <span style={{ color: 'rgba(255,255,255,0.75)' }}>{currentArticle.title}</span>
               </nav>
 
-              {/* Document Content */}
-              <article style={{ minHeight: '350px', marginTop: '10px' }}>
-                {currentArticle.content}
-              </article>
+              {/* Article Header */}
+              <h1 className="docs-article-title">{currentArticle.title}</h1>
+              <div className="docs-article-meta">
+                <span className={`docs-article-tag category`}>
+                  {currentArticle.categoryIcon} {currentArticle.categoryLabel}
+                </span>
+                <span className="docs-article-tag time">
+                  <Clock size={12} /> {currentArticle.readingTime} min de leitura
+                </span>
+                <span className={`docs-article-tag difficulty-${currentArticle.difficulty}`}>
+                  {difficultyLabel[currentArticle.difficulty]}
+                </span>
+              </div>
 
-              {/* Next/Previous Article Navigation */}
-              <div 
-                style={{ 
-                  display: 'flex', 
-                  justifyContent: 'space-between', 
-                  alignItems: 'center', 
-                  borderTop: '1px solid rgba(255,255,255,0.08)', 
-                  paddingTop: '30px', 
-                  marginTop: '40px',
-                  gap: '20px'
-                }}
-              >
+              <div className="docs-divider" />
+
+              {/* Article Content */}
+              <article>{currentArticle.content}</article>
+
+              {/* Feedback */}
+              <div className="docs-feedback">
+                <span className="docs-feedback-label">
+                  {feedbackGiven[currentArticle.id]
+                    ? feedbackGiven[currentArticle.id] === 'yes'
+                      ? '🎉 Obrigado pelo feedback positivo!'
+                      : '😔 Obrigado! Vamos melhorar este guia.'
+                    : 'Este guia foi útil?'}
+                </span>
+                {!feedbackGiven[currentArticle.id] && (
+                  <>
+                    <button
+                      className="docs-feedback-btn yes"
+                      onClick={() => setFeedbackGiven(f => ({ ...f, [currentArticle.id]: 'yes' }))}
+                    >
+                      <ThumbsUp size={14} /> Sim
+                    </button>
+                    <button
+                      className="docs-feedback-btn no"
+                      onClick={() => setFeedbackGiven(f => ({ ...f, [currentArticle.id]: 'no' }))}
+                    >
+                      <ThumbsDown size={14} /> Não
+                    </button>
+                  </>
+                )}
+              </div>
+
+              {/* Pagination */}
+              <div className="docs-pagination">
                 {prevArticle ? (
-                  <button
-                    onClick={() => {
-                      setActiveArticleId(prevArticle.id);
-                      window.scrollTo({ top: 0, behavior: 'smooth' });
-                    }}
-                    style={{
-                      flex: 1,
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '15px',
-                      background: 'rgba(255,255,255,0.02)',
-                      border: '1px solid rgba(255,255,255,0.05)',
-                      borderRadius: '8px',
-                      padding: '16px 20px',
-                      color: '#ffffff',
-                      textAlign: 'left',
-                      cursor: 'pointer',
-                      transition: 'all 0.2s ease',
-                      maxWidth: '48%'
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.borderColor = '#e53637';
-                      e.currentTarget.style.background = 'rgba(229, 54, 55, 0.02)';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.borderColor = 'rgba(255,255,255,0.05)';
-                      e.currentTarget.style.background = 'rgba(255,255,255,0.02)';
-                    }}
-                  >
-                    <ArrowLeft size={18} style={{ color: '#e53637', flexShrink: 0 }} />
-                    <div style={{ minWidth: 0, flex: 1 }}>
-                      <div style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', fontWeight: 700, letterSpacing: '0.5px' }}>Anterior</div>
-                      <div style={{ fontSize: '14.5px', fontWeight: 700, marginTop: '2px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{prevArticle.title}</div>
+                  <button className="docs-pagination-btn" onClick={() => navigateTo(prevArticle.id)}>
+                    <ArrowLeft size={17} style={{ color: '#e53637', flexShrink: 0 }} />
+                    <div>
+                      <div className="docs-pagination-label">Anterior</div>
+                      <div className="docs-pagination-title">{prevArticle.title}</div>
                     </div>
                   </button>
                 ) : <div style={{ flex: 1 }} />}
 
                 {nextArticle ? (
-                  <button
-                    onClick={() => {
-                      setActiveArticleId(nextArticle.id);
-                      window.scrollTo({ top: 0, behavior: 'smooth' });
-                    }}
-                    style={{
-                      flex: 1,
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'flex-end',
-                      gap: '15px',
-                      background: 'rgba(255,255,255,0.02)',
-                      border: '1px solid rgba(255,255,255,0.05)',
-                      borderRadius: '8px',
-                      padding: '16px 20px',
-                      color: '#ffffff',
-                      textAlign: 'right',
-                      cursor: 'pointer',
-                      transition: 'all 0.2s ease',
-                      maxWidth: '48%'
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.borderColor = '#e53637';
-                      e.currentTarget.style.background = 'rgba(229, 54, 55, 0.02)';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.borderColor = 'rgba(255,255,255,0.05)';
-                      e.currentTarget.style.background = 'rgba(255,255,255,0.02)';
-                    }}
-                  >
-                    <div style={{ minWidth: 0, flex: 1 }}>
-                      <div style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', fontWeight: 700, letterSpacing: '0.5px' }}>Próximo</div>
-                      <div style={{ fontSize: '14.5px', fontWeight: 700, marginTop: '2px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{nextArticle.title}</div>
+                  <button className="docs-pagination-btn next" onClick={() => navigateTo(nextArticle.id)}>
+                    <div>
+                      <div className="docs-pagination-label">Próximo</div>
+                      <div className="docs-pagination-title">{nextArticle.title}</div>
                     </div>
-                    <ArrowRight size={18} style={{ color: '#e53637', flexShrink: 0 }} />
+                    <ArrowRight size={17} style={{ color: '#e53637', flexShrink: 0 }} />
                   </button>
                 ) : <div style={{ flex: 1 }} />}
               </div>
             </>
-          ) : (
-            <div style={{ textAlign: 'center', padding: '100px 0' }}>
-              <h2 style={{ color: '#ffffff' }}>Nenhum artigo disponível</h2>
-              <p style={{ color: '#b7b7b7' }}>Limpe a pesquisa para ver os artigos do Clube.</p>
-            </div>
           )}
         </main>
+
+        {/* ═══════════════ RIGHT TOC ═══════════════ */}
+        {currentArticle && currentArticle.toc.length > 0 && (
+          <nav className="docs-right-toc">
+            <div className="docs-right-toc-header">
+              <Hash size={10} style={{ display: 'inline', marginRight: '4px' }} />
+              Nesta página
+            </div>
+            {currentArticle.toc.map(entry => (
+              <button
+                key={entry.id}
+                className={`docs-toc-link ${activeTocId === entry.id ? 'active' : ''}`}
+                onClick={() => {
+                  const el = document.getElementById(entry.id);
+                  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                  setActiveTocId(entry.id);
+                }}
+              >
+                {entry.label}
+              </button>
+            ))}
+          </nav>
+        )}
       </div>
     </>
   );
