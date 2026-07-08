@@ -243,7 +243,7 @@ Para que nossa equipe veja e analise de forma oficial, copie o texto abaixo e no
           >
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
               <img
-                src="/avatar/monika.png"
+                src="/avatar/monika.jpg"
                 alt="MoniBot Avatar"
                 style={{
                   width: '36px',
