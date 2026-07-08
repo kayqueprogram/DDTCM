@@ -13,6 +13,14 @@ export const ModDetails: React.FC = () => {
   
   const mod = modsData.find(m => m.slug === slug);
 
+  const handleReportError = () => {
+    if (!mod) return;
+    const event = new CustomEvent('ddtc-open-chat', {
+      detail: { type: 'Revisão', modName: mod.title }
+    });
+    window.dispatchEvent(event);
+  };
+
   if (!mod) {
     return (
       <div className="container" style={{ padding: '100px 0', textAlign: 'center' }}>
@@ -209,6 +217,33 @@ export const ModDetails: React.FC = () => {
                         <span>APK Indisponível</span>
                       </button>
                     ) : null}
+
+                    <button
+                      onClick={handleReportError}
+                      className="watch-btn"
+                      style={{
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '8px',
+                        padding: '12px 30px',
+                        background: 'transparent',
+                        border: '1px solid rgba(255, 255, 255, 0.2)',
+                        color: '#ffffff',
+                        cursor: 'pointer',
+                        transition: 'all 0.3s'
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.borderColor = '#e53637';
+                        e.currentTarget.style.color = '#e53637';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.2)';
+                        e.currentTarget.style.color = '#ffffff';
+                      }}
+                    >
+                      <AlertTriangle size={18} />
+                      <span>Sugerir Revisão</span>
+                    </button>
                   </div>
 
                 </div>

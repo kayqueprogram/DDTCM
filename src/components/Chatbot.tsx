@@ -20,6 +20,7 @@ export const Chatbot: React.FC = () => {
     userName?: string;
     modName?: string;
     description?: string;
+    screenshot?: string;
     contact?: string;
     ticketId?: string;
   }>({});
@@ -60,6 +61,50 @@ export const Chatbot: React.FC = () => {
     ]);
   };
 
+  // Listen for the custom "ddtc-open-chat" event to pre-fill Mod details
+  useEffect(() => {
+    const handleOpenChatEvent = (e: Event) => {
+      const customEvent = e as CustomEvent<{ type: string; modName: string }>;
+      const { type, modName } = customEvent.detail;
+
+      // Anti-spam check
+      const lastTime = localStorage.getItem('ddtc_last_ticket_time');
+      if (lastTime && Date.now() - Number(lastTime) < 120000) {
+        setIsOpen(true);
+        setCurrentStep('start');
+        setMessages((prev) => [
+          ...prev,
+          {
+            id: Math.random().toString(),
+            sender: 'bot',
+            text: 'Desculpe, mas você enviou um ticket recentemente! Para evitar spam, por favor aguarde 2 minutos antes de enviar outra sugestão. 🛑',
+            timestamp: formatTime(),
+            options: [{ label: 'Voltar ao início', value: 'go_start' }],
+          },
+        ]);
+        return;
+      }
+
+      setIsOpen(true);
+      setSuggestionData({ type, modName });
+      setCurrentStep('ask_user_name');
+
+      setMessages([
+        {
+          id: Math.random().toString(),
+          sender: 'bot',
+          text: `Olá! Vi que você quer sugerir uma ${type.toLowerCase()} para o mod "${modName}". \n\nPara começarmos, como gostaria de ser chamado(a) (seu nome ou nickname)?`,
+          timestamp: formatTime(),
+        },
+      ]);
+    };
+
+    window.addEventListener('ddtc-open-chat', handleOpenChatEvent);
+    return () => {
+      window.removeEventListener('ddtc-open-chat', handleOpenChatEvent);
+    };
+  }, []);
+
   // Initialize chat with welcome message
   useEffect(() => {
     if (messages.length === 0) {
@@ -87,6 +132,17 @@ export const Chatbot: React.FC = () => {
 
   const handleOptionClick = (value: string, label: string) => {
     addUserMessage(label);
+
+    if (value === 'suggest_translation' || value === 'suggest_review') {
+      // Anti-spam check
+      const lastTime = localStorage.getItem('ddtc_last_ticket_time');
+      if (lastTime && Date.now() - Number(lastTime) < 120000) {
+        addBotMessage('Desculpe, mas você enviou um ticket recentemente! Para evitar spam, por favor aguarde 2 minutos antes de enviar outra sugestão. 🛑', [
+          { label: 'Voltar ao início', value: 'go_start' },
+        ]);
+        return;
+      }
+    }
 
     if (value === 'suggest_translation') {
       setSuggestionData({ type: 'Tradução' });
@@ -141,14 +197,25 @@ export const Chatbot: React.FC = () => {
 
     if (currentStep === 'ask_user_name') {
       setSuggestionData((prev) => ({ ...prev, userName: text }));
-      setCurrentStep('ask_mod_name');
-      addBotMessage(`Prazer em conhecer você, ${text}! Qual é o nome do mod de DDLC em questão?`);
+      if (suggestionData.modName) {
+        setCurrentStep('ask_details');
+        addBotMessage(`Prazer em conhecer você, ${text}! Como já sabemos que o mod é o "${suggestionData.modName}", por favor detalhe a sua sugestão ou o erro de revisão encontrado:`);
+      } else {
+        setCurrentStep('ask_mod_name');
+        addBotMessage(`Prazer em conhecer você, ${text}! Qual é o nome do mod de DDLC em questão?`);
+      }
     } else if (currentStep === 'ask_mod_name') {
       setSuggestionData((prev) => ({ ...prev, modName: text }));
       setCurrentStep('ask_details');
       addBotMessage(`Registrado o mod "${text}". Agora, por favor, detalhe a sua sugestão ou o erro de revisão encontrado:`);
     } else if (currentStep === 'ask_details') {
       setSuggestionData((prev) => ({ ...prev, description: text }));
+      setCurrentStep('ask_screenshot');
+      addBotMessage('Registrado! Você tem algum print (screenshot) do erro ou imagem de referência? Se sim, envie o link aqui. Se não, digite "não" para prosseguir:');
+    } else if (currentStep === 'ask_screenshot') {
+      const isNoImg = text.toLowerCase() === 'não' || text.toLowerCase() === 'nao';
+      const screenshotVal = isNoImg ? 'Nenhum' : text;
+      setSuggestionData((prev) => ({ ...prev, screenshot: screenshotVal }));
       setCurrentStep('ask_contact');
       addBotMessage('Certo! Se quiser que a nossa equipe possa te dar um retorno sobre a sua sugestão, digite seu Discord ou e-mail (ou digite "não" para enviar anonimamente):');
     } else if (currentStep === 'ask_contact') {
@@ -174,7 +241,16 @@ export const Chatbot: React.FC = () => {
 
       if (isDev && localWebhook) {
         // Envio direto via client side em desenvolvimento local
-        const embed = {
+        const isValidUrl = (string: string) => {
+          try {
+            new URL(string);
+            return true;
+          } catch (_) {
+            return false;  
+          }
+        };
+
+        const embed: any = {
           title: `🎫 Ticket ${ticketId} - Sugestão de ${finalData.type || 'Sugestão'}`,
           color: finalData.type === 'Tradução' ? 15021623 : 5793010,
           author: {
@@ -190,6 +266,14 @@ export const Chatbot: React.FC = () => {
             text: 'Enviado via MoniBot 🎀'
           }
         };
+
+        if (finalData.screenshot && finalData.screenshot !== 'Nenhum') {
+          if (isValidUrl(finalData.screenshot)) {
+            embed.image = { url: finalData.screenshot };
+          } else {
+            embed.fields.push({ name: '🖼️ Imagem / Print', value: finalData.screenshot });
+          }
+        }
 
         fetchPromise = fetch(localWebhook, {
           method: 'POST',
@@ -207,7 +291,8 @@ export const Chatbot: React.FC = () => {
             details: finalData.description,
             userName: finalData.userName,
             contact: contactVal,
-            ticketId: ticketId
+            ticketId: ticketId,
+            screenshot: finalData.screenshot
           }),
         });
       }
@@ -216,6 +301,9 @@ export const Chatbot: React.FC = () => {
         .then((res) => {
           setIsTyping(false);
           if (res.ok) {
+            // Save rate limit timestamp
+            localStorage.setItem('ddtc_last_ticket_time', Date.now().toString());
+
             addBotMessage(
               `Tudo certo! Criei o Ticket **${ticketId}** e enviei diretamente para a equipe no Discord de forma automática! 🚀\n\nAgradecemos muito pela sua contribuição!`,
               [
@@ -230,7 +318,7 @@ export const Chatbot: React.FC = () => {
         .catch(() => {
           setIsTyping(false);
           addBotMessage(
-            `Criado o Ticket **${ticketId}**! Porém, como ocorreu uma falha no envio automático, envie no nosso Discord copiando as informações:\n\n------------------\n🎫 TICKET: ${ticketId}\n👤 AUTOR: ${finalData.userName || 'Anônimo'}\n📝 SUGESTÃO: ${finalData.type || ''}\n🎮 MOD: ${finalData.modName || ''}\n📞 CONTATO: ${contactVal}\n💡 DETALHES: ${finalData.description || ''}\n------------------`,
+            `Criado o Ticket **${ticketId}**! Porém, como ocorreu uma falha no envio automático, envie no nosso Discord copiando as informações:\n\n------------------\n🎫 TICKET: ${ticketId}\n👤 AUTOR: ${finalData.userName || 'Anônimo'}\n📝 SUGESTÃO: ${finalData.type || ''}\n🎮 MOD: ${finalData.modName || ''}\n🖼️ IMAGEM: ${finalData.screenshot || 'Nenhuma'}\n📞 CONTATO: ${contactVal}\n💡 DETALHES: ${finalData.description || ''}\n------------------`,
             [
               { label: 'Abrir nosso Discord', value: 'go_to_discord' },
               { label: 'Voltar ao início', value: 'go_start' },

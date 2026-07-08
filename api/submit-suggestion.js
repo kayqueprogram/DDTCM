@@ -17,12 +17,21 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const { type, modName, details, userName, contact, ticketId } = req.body;
+  const { type, modName, details, userName, contact, ticketId, screenshot } = req.body;
   const webhookUrl = process.env.DISCORD_WEBHOOK_URL || process.env.VITE_DISCORD_WEBHOOK_URL;
 
   if (!webhookUrl) {
     return res.status(500).json({ error: 'Discord Webhook URL is not configured on the server.' });
   }
+
+  const isValidUrl = (string) => {
+    try {
+      new URL(string);
+      return true;
+    } catch (_) {
+      return false;  
+    }
+  };
 
   const embed = {
     title: `🎫 Ticket ${ticketId || ''} - Sugestão de ${type}`,
@@ -40,6 +49,14 @@ export default async function handler(req, res) {
       text: 'Enviado via MoniBot 🎀'
     }
   };
+
+  if (screenshot && screenshot !== 'Nenhum') {
+    if (isValidUrl(screenshot)) {
+      embed.image = { url: screenshot };
+    } else {
+      embed.fields.push({ name: '🖼️ Imagem / Print', value: screenshot });
+    }
+  }
 
   try {
     const response = await fetch(webhookUrl, {
