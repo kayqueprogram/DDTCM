@@ -3,7 +3,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const distDir = path.join(root, 'dist');
+const publicDir = path.join(root, 'public');
 const modsPath = path.join(root, 'src', 'data', 'mods.json');
 
 const siteUrl =
@@ -11,8 +11,8 @@ const siteUrl =
   process.env.SITE_URL ||
   (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'https://doki-doki-translate-company.vercel.app');
 
-if (!fs.existsSync(distDir)) {
-  throw new Error('dist directory not found. Run the Vite build before generating SEO files.');
+if (!fs.existsSync(publicDir)) {
+  fs.mkdirSync(publicDir, { recursive: true });
 }
 
 const mods = JSON.parse(fs.readFileSync(modsPath, 'utf8'));
@@ -35,5 +35,5 @@ const sitemap = `<?xml version="1.0" encoding="UTF-8"?>\n` +
 
 const robots = `User-agent: *\nAllow: /\nSitemap: ${siteUrl}/sitemap.xml\n`;
 
-fs.writeFileSync(path.join(distDir, 'sitemap.xml'), sitemap);
-fs.writeFileSync(path.join(distDir, 'robots.txt'), robots);
+fs.writeFileSync(path.join(publicDir, 'sitemap.xml'), sitemap);
+fs.writeFileSync(path.join(publicDir, 'robots.txt'), robots);

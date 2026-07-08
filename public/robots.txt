@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://doki-doki-translate-company.vercel.app/sitemap.xml
