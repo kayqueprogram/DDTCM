@@ -5,6 +5,7 @@ import { ModList } from './pages/ModList';
 import { ModDetails } from './pages/ModDetails';
 import { Equipe } from './pages/Equipe';
 import { Recrutamento } from './pages/Recrutamento';
+import { Chatbot } from './components/Chatbot';
 import { ArrowUp, Menu, X } from 'lucide-react';
 import { Helmet } from 'react-helmet-async';
 import { SITE_NAME, SITE_DESCRIPTION } from './lib/site';
@@ -158,6 +159,7 @@ export const AppContent: React.FC = () => {
           </div>
         </div>
       </footer>
+      <Chatbot />
     </div>
   );
 };
