@@ -18,7 +18,7 @@ export default async function handler(req, res) {
   }
 
   const { type, modName, details } = req.body;
-  const webhookUrl = process.env.DISCORD_WEBHOOK_URL;
+  const webhookUrl = process.env.DISCORD_WEBHOOK_URL || process.env.VITE_DISCORD_WEBHOOK_URL;
 
   if (!webhookUrl) {
     return res.status(500).json({ error: 'Discord Webhook URL is not configured on the server.' });

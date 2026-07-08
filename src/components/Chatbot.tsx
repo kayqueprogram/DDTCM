@@ -148,15 +148,42 @@ export const Chatbot: React.FC = () => {
       setCurrentStep('finished_suggestion');
       setIsTyping(true);
 
-      fetch('/api/submit-suggestion', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          type: finalData.type,
-          modName: finalData.modName,
-          details: text,
-        }),
-      })
+      const isDev = import.meta.env.DEV;
+      const localWebhook = import.meta.env.VITE_DISCORD_WEBHOOK_URL;
+
+      let fetchPromise;
+
+      if (isDev && localWebhook) {
+        // Envio direto via client side em desenvolvimento local
+        const embed = {
+          title: `📝 Nova Sugestão de ${finalData.type || 'Sugestão'}`,
+          color: finalData.type === 'Tradução' ? 15021623 : 5793010,
+          fields: [
+            { name: '🎮 Mod', value: finalData.modName || 'Não especificado', inline: true },
+            { name: '💡 Detalhes / Correção', value: text || 'Não especificado' }
+          ],
+          timestamp: new Date().toISOString()
+        };
+
+        fetchPromise = fetch(localWebhook, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ embeds: [embed] })
+        });
+      } else {
+        // Envio seguro por API Serverless em produção
+        fetchPromise = fetch('/api/submit-suggestion', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            type: finalData.type,
+            modName: finalData.modName,
+            details: text,
+          }),
+        });
+      }
+
+      fetchPromise
         .then((res) => {
           setIsTyping(false);
           if (res.ok) {
