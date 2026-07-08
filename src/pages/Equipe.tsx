@@ -1,4 +1,6 @@
 import React from 'react';
+import { Seo } from '../components/Seo';
+import { SITE_NAME, SITE_URL } from '../lib/site';
 
 interface Member {
   name: string;
@@ -30,6 +32,24 @@ const team: Member[] = [
 export const Equipe: React.FC = () => {
   return (
     <>
+      <Seo
+        title="Equipe"
+        description="Conheça a equipe por trás do memorial da Doki Doki Translate Club e da manutenção do acervo de traduções e mods."
+        canonicalPath="/equipe"
+        keywords={[
+          'equipe DDTC',
+          'Doki Doki Translate Club',
+          'Doki Doki Translate Company',
+          'memorial DDLC',
+        ]}
+        structuredData={{
+          '@context': 'https://schema.org',
+          '@type': 'Organization',
+          name: SITE_NAME,
+          url: SITE_URL,
+        }}
+      />
+
       {/* Breadcrumb section */}
       <div className="breadcrumb-option" style={{ background: '#0b0c2a', padding: '35px 0' }}>
         <div className="container">
@@ -52,9 +72,9 @@ export const Equipe: React.FC = () => {
           <div className="row justify-content-center" style={{ marginBottom: '60px' }}>
             <div className="col-lg-8 text-center">
               <div className="section-title" style={{ marginBottom: '15px' }}>
-                <h2 style={{ color: '#ffffff', fontWeight: 700, fontSize: '36px', textTransform: 'uppercase', letterSpacing: '1px' }}>
+                <h1 style={{ color: '#ffffff', fontWeight: 700, fontSize: '36px', textTransform: 'uppercase', letterSpacing: '1px' }}>
                   Conheça o time
-                </h2>
+                </h1>
               </div>
               <p style={{ color: '#b7b7b7', fontSize: '16px', lineHeight: '28px', maxWidth: '600px', margin: '0 auto' }}>
                 As pessoas por trás do desenvolvimento e preservação do acervo da Doki Doki Translate Club Memorial.
