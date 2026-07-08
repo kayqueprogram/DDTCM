@@ -411,7 +411,7 @@ export const Home: React.FC = () => {
               <div className="product__sidebar">
                 
                 {/* Anúncios Panel */}
-                <div className="product__sidebar__view" style={{ background: '#121230', padding: '25px', borderRadius: '8px', marginBottom: '45px' }}>
+                <div className="product__sidebar__view" style={{ background: '#121230', padding: '25px', borderRadius: '8px', marginBottom: '30px' }}>
                   <div className="section-title" style={{ marginBottom: '20px' }}>
                     <h5 style={{ color: '#ffffff', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1px', position: 'relative', paddingLeft: '15px' }}>
                       <span style={{ position: 'absolute', left: 0, top: 0, width: '4px', height: '100%', backgroundColor: '#e53637' }} />
