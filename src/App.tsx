@@ -53,7 +53,7 @@ export const AppContent: React.FC = () => {
                   <img
                     className="header__brand-icon"
                     src="/css/favicon/favicon_io/android-chrome-192x192.png"
-                  alt="Doki Doki Translate Club Memorial"
+                  alt="Doki Doki Translate Company"
                     style={{ width: '52px', height: '52px', maxHeight: 'none', borderRadius: '50%' }}
                   />
                   <span className="header__brand" style={{ fontSize: '28px', fontWeight: 900, letterSpacing: '1px', color: '#ffffff' }}>
@@ -133,7 +133,7 @@ export const AppContent: React.FC = () => {
                   <img
                     className="header__brand-icon"
                     src="/css/favicon/favicon_io/android-chrome-192x192.png"
-                    alt="Doki Doki Translate Club Memorial"
+                    alt="Doki Doki Translate Company"
                     style={{ width: '32px', height: '32px', filter: 'grayscale(100%)' }}
                   />
                   <span className="header__brand" style={{ fontSize: '18px', fontWeight: 800, color: 'rgba(255,255,255,0.6)' }}>

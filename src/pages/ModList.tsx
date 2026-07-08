@@ -133,7 +133,7 @@ export const ModList: React.FC = () => {
                   </div>
                 </div>
                 <p style={{ color: '#b7b7b7', marginBottom: '25px', maxWidth: '900px' }}>
-                  Explore o catálogo completo de traduções da Doki Doki Translate Club Memorial, com filtros por gênero, plataforma e busca por título, tradutor ou desenvolvedor.
+                  Explore o catálogo completo de traduções da Doki Doki Translate Company, com filtros por gênero, plataforma e busca por título, tradutor ou desenvolvedor.
                 </p>
 
                 {/* Filters & Search Panel */}

@@ -45,7 +45,7 @@ const slides: Slide[] = [
   {
     bg: '/img/label/label1.jpg',
     label: 'ESTAMOS DE VOLTA!',
-    title: 'A Doki Doki Translate Club Retorna!',
+    title: 'A Doki Doki Translate Company Retorna!',
     description: 'O que antes era apenas um memorial agora volta a ganhar vida. Iniciamos uma nova fase para resgatar e revisar traduções de mods de Doki Doki Literature Club.',
     actionText: 'Ver lista de mods',
     actionLink: '/mods'
@@ -165,7 +165,7 @@ export const Home: React.FC = () => {
       <section className="hero">
         <div className="container">
           <h1 className="sr-only">
-            Doki Doki Translate Club Memorial e acervo de traduções de DDLC
+            Doki Doki Translate Company e acervo de traduções de DDLC
           </h1>
           <div className="hero__slider-container" style={{ position: 'relative', overflow: 'hidden', borderRadius: '4px' }}>
             {slides.map((slide, index) => (
@@ -411,7 +411,7 @@ export const Home: React.FC = () => {
               <div className="product__sidebar">
                 
                 {/* Anúncios Panel */}
-                <div className="product__sidebar__view" style={{ background: '#121230', padding: '25px', borderRadius: '8px', marginBottom: '80px' }}>
+                <div className="product__sidebar__view" style={{ background: '#121230', padding: '25px', borderRadius: '8px', marginBottom: '45px' }}>
                   <div className="section-title" style={{ marginBottom: '20px' }}>
                     <h5 style={{ color: '#ffffff', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1px', position: 'relative', paddingLeft: '15px' }}>
                       <span style={{ position: 'absolute', left: 0, top: 0, width: '4px', height: '100%', backgroundColor: '#e53637' }} />

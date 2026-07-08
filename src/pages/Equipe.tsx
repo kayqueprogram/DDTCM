@@ -77,7 +77,7 @@ export const Equipe: React.FC = () => {
                 </h1>
               </div>
               <p style={{ color: '#b7b7b7', fontSize: '16px', lineHeight: '28px', maxWidth: '600px', margin: '0 auto' }}>
-                As pessoas por trás do desenvolvimento e preservação do acervo da Doki Doki Translate Club Memorial.
+                As pessoas por trás do desenvolvimento e preservação do acervo da Doki Doki Translate Company.
               </p>
             </div>
           </div>

@@ -71,7 +71,7 @@ export const Recrutamento: React.FC = () => {
                   <h3 style={{ color: '#ffffff', fontWeight: 700, margin: 0 }}>O Clube de Tradução Está de Volta!</h3>
                 </div>
                 <p style={{ color: '#b7b7b7', fontSize: '16px', lineHeight: '28px', marginBottom: '20px' }}>
-                  A <strong>Doki Doki Translate Club</strong> está iniciando uma nova fase. Nosso primeiro grande objetivo é <strong>revisar minuciosamente as traduções de mods já lançadas</strong> para corrigir erros gramaticais, melhorar a concordância e garantir a melhor experiência possível. 
+                  A <strong>Doki Doki Translate Company</strong> está iniciando uma nova fase. Nosso primeiro grande objetivo é <strong>revisar minuciosamente as traduções de mods já lançadas</strong> para corrigir erros gramaticais, melhorar a concordância e garantir a melhor experiência possível. 
                 </p>
                 <p style={{ color: '#b7b7b7', fontSize: '16px', lineHeight: '28px', marginBottom: '30px' }}>
                   Depois disso, pretendemos voltar com traduções inéditas! No entanto, para que tudo isso aconteça de forma organizada e com alta qualidade, precisamos expandir nossa equipe. Não importa se você tem anos de experiência ou quer aprender, toda ajuda é bem-vinda!
