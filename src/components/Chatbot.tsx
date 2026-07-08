@@ -242,23 +242,17 @@ Para que nossa equipe veja e analise de forma oficial, copie o texto abaixo e no
             }}
           >
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-              <div
+              <img
+                src="/avatar/monika.png"
+                alt="MoniBot Avatar"
                 style={{
                   width: '36px',
                   height: '36px',
                   borderRadius: '50%',
-                  background: '#e53637',
-                  color: '#ffffff',
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  fontWeight: 900,
-                  fontSize: '14px',
+                  objectFit: 'cover',
                   boxShadow: '0 2px 8px rgba(229, 54, 55, 0.3)',
                 }}
-              >
-                MB
-              </div>
+              />
               <div>
                 <div style={{ color: '#ffffff', fontWeight: 700, fontSize: '15px', lineHeight: '1.2' }}>MoniBot</div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '5px', fontSize: '11px', color: '#b7b7b7', marginTop: '2px' }}>
