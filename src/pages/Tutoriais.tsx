@@ -5,7 +5,8 @@ import {
   ChevronRight,
   ArrowLeft,
   ArrowRight,
-  Info
+  Info,
+  Search
 } from 'lucide-react';
 
 interface Article {
@@ -14,10 +15,12 @@ interface Article {
   category: string;
   categoryLabel: string;
   content: React.ReactNode;
+  keywords: string;
 }
 
 export const Tutoriais: React.FC = () => {
   const [activeArticleId, setActiveArticleId] = useState<string>('pc-install');
+  const [searchQuery, setSearchQuery] = useState<string>('');
 
   const articles: Article[] = [
     {
@@ -25,6 +28,7 @@ export const Tutoriais: React.FC = () => {
       category: 'install',
       categoryLabel: 'Instalação de Mods',
       title: 'Como Instalar no PC (Steam & Standalone)',
+      keywords: 'instalacao pc steam standalone game copiar extrair winrar zip rar pasta game ddlc.exe',
       content: (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
           <h1 style={{ color: '#ffffff', fontSize: '32px', fontWeight: 800, marginBottom: '5px' }}>Instalação de Mods no PC</h1>
@@ -78,6 +82,7 @@ export const Tutoriais: React.FC = () => {
       category: 'install',
       categoryLabel: 'Instalação de Mods',
       title: 'Como Instalar no Android (APK)',
+      keywords: 'portes android apk celular smartphone protect seguranca fontes desconhecidas instalar telefone mobile',
       content: (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
           <h1 style={{ color: '#ffffff', fontSize: '32px', fontWeight: 800, marginBottom: '5px' }}>Portes para Android (APK)</h1>
@@ -116,6 +121,7 @@ export const Tutoriais: React.FC = () => {
       category: 'translation',
       categoryLabel: 'Tradução & Estilo',
       title: 'Glossário Padronizado (Termos Oficiais)',
+      keywords: 'glossario termos tradução padronização literatura clubroom cupcake festival poem panic oficial',
       content: (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
           <h1 style={{ color: '#ffffff', fontSize: '32px', fontWeight: 800, marginBottom: '5px' }}>Glossário de Termos de DDLC</h1>
@@ -169,6 +175,7 @@ export const Tutoriais: React.FC = () => {
       category: 'translation',
       categoryLabel: 'Tradução & Estilo',
       title: 'Guia de Estilo de Escrita e Pontuação',
+      keywords: 'guia estilo escrita personalidade garotas sayori natsuki yuri monika pontuacao tsundere gaguejo exclamacao',
       content: (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
           <h1 style={{ color: '#ffffff', fontSize: '32px', fontWeight: 800, marginBottom: '5px' }}>Guia de Estilo de Escrita</h1>
@@ -214,6 +221,7 @@ export const Tutoriais: React.FC = () => {
       category: 'faq',
       categoryLabel: 'Perguntas Frequentes',
       title: 'As traduções são oficiais?',
+      keywords: 'oficiais salvato original livre copyright guidelines legal regras de fa',
       content: (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
           <h1 style={{ color: '#ffffff', fontSize: '32px', fontWeight: 800, marginBottom: '5px' }}>Oficialidade das Traduções</h1>
@@ -236,6 +244,7 @@ export const Tutoriais: React.FC = () => {
       category: 'faq',
       categoryLabel: 'Perguntas Frequentes',
       title: 'Como reportar erros ou sugerir melhorias?',
+      keywords: 'reportar report bug erros correcoes melhorias monibot sugestao discord ticket',
       content: (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
           <h1 style={{ color: '#ffffff', fontSize: '32px', fontWeight: 800, marginBottom: '5px' }}>Sugestões e Reportes de Erros</h1>
@@ -260,14 +269,19 @@ export const Tutoriais: React.FC = () => {
     }
   ];
 
-  const currentArticleIndex = articles.findIndex(a => a.id === activeArticleId);
-  const currentArticle = articles[currentArticleIndex] || articles[0];
+  // Filtering based on search query
+  const filteredArticles = articles.filter(article => {
+    const query = searchQuery.toLowerCase().trim();
+    if (!query) return true;
+    return (
+      article.title.toLowerCase().includes(query) ||
+      article.categoryLabel.toLowerCase().includes(query) ||
+      article.keywords.toLowerCase().includes(query)
+    );
+  });
 
-  const nextArticle = currentArticleIndex < articles.length - 1 ? articles[currentArticleIndex + 1] : null;
-  const prevArticle = currentArticleIndex > 0 ? articles[currentArticleIndex - 1] : null;
-
-  // Group articles by category for the sidebar
-  const categoriesMap = articles.reduce((acc, article) => {
+  // Group filtered articles by category for the sidebar
+  const categoriesMap = filteredArticles.reduce((acc, article) => {
     if (!acc[article.category]) {
       acc[article.category] = {
         label: article.categoryLabel,
@@ -278,12 +292,19 @@ export const Tutoriais: React.FC = () => {
     return acc;
   }, {} as Record<string, { label: string; items: Article[] }>);
 
+  // If active article was filtered out, default to the first filtered article if available
+  const currentArticle = filteredArticles.find(a => a.id === activeArticleId) || filteredArticles[0];
+
+  const currentArticleIndex = articles.findIndex(a => a.id === (currentArticle?.id || ''));
+  const nextArticle = currentArticleIndex < articles.length - 1 ? articles[currentArticleIndex + 1] : null;
+  const prevArticle = currentArticleIndex > 0 ? articles[currentArticleIndex - 1] : null;
+
   return (
     <>
       <Seo 
-        title={`${currentArticle.title} - Central de Guias`}
-        description={`Guia de ${currentArticle.title} no memorial da Doki Doki Translate Company.`}
-        canonicalPath={`/tutoriais`}
+        title={currentArticle ? `${currentArticle.title} - Central de Guias` : "Central de Guias"}
+        description={currentArticle ? `Guia de ${currentArticle.title} no memorial da Doki Doki Translate Company.` : "Central de tutoriais e ajuda da Doki Doki Translate Company."}
+        canonicalPath="/tutoriais"
       />
 
       <div style={{ display: 'flex', background: '#0b0c2a', minHeight: 'calc(100vh - 96px)', color: '#ffffff' }}>
@@ -291,80 +312,128 @@ export const Tutoriais: React.FC = () => {
         {/* LEFT SIDEBAR (Discord Guide TOC style) */}
         <aside 
           style={{
-            width: '280px',
+            width: '290px',
             background: '#07071a',
             borderRight: '1px solid rgba(255, 255, 255, 0.05)',
-            padding: '30px 20px',
+            padding: '25px 15px',
             position: 'sticky',
             top: '96px',
             height: 'calc(100vh - 96px)',
             overflowY: 'auto',
             display: 'flex',
             flexDirection: 'column',
-            gap: '25px',
+            gap: '20px',
             flexShrink: 0
           }}
           className="discord-guide-sidebar"
         >
-          {Object.entries(categoriesMap).map(([catId, cat]) => (
-            <div key={catId} style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-              {/* Category Header */}
-              <div 
-                style={{ 
-                  color: 'rgba(255, 255, 255, 0.4)', 
-                  fontWeight: 800, 
-                  fontSize: '11px', 
-                  letterSpacing: '1.5px', 
-                  textTransform: 'uppercase',
-                  paddingLeft: '10px',
-                  marginBottom: '4px'
-                }}
-              >
-                {cat.label}
-              </div>
+          {/* SEARCH BAR */}
+          <div style={{ position: 'relative', width: '100%' }}>
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Pesquisar guias..."
+              style={{
+                width: '100%',
+                background: 'rgba(255, 255, 255, 0.04)',
+                border: '1px solid rgba(255, 255, 255, 0.08)',
+                borderRadius: '6px',
+                padding: '10px 12px 10px 38px',
+                color: '#ffffff',
+                fontSize: '13.5px',
+                outline: 'none',
+                transition: 'all 0.3s'
+              }}
+              onFocus={(e) => {
+                e.currentTarget.style.borderColor = '#e53637';
+                e.currentTarget.style.background = 'rgba(255, 255, 255, 0.07)';
+              }}
+              onBlur={(e) => {
+                e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.08)';
+                e.currentTarget.style.background = 'rgba(255, 255, 255, 0.04)';
+              }}
+            />
+            <Search 
+              size={16} 
+              style={{ 
+                position: 'absolute', 
+                left: '12px', 
+                top: '50%', 
+                transform: 'translateY(-50%)', 
+                color: 'rgba(255, 255, 255, 0.35)' 
+              }} 
+            />
+          </div>
 
-              {/* Links under category */}
-              {cat.items.map((art) => (
-                <button
-                  key={art.id}
-                  onClick={() => setActiveArticleId(art.id)}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    width: '100%',
-                    background: activeArticleId === art.id ? 'rgba(229, 54, 55, 0.1)' : 'transparent',
-                    color: activeArticleId === art.id ? '#e53637' : '#b7b7b7',
-                    border: 'none',
-                    borderRadius: '4px',
-                    padding: '10px 12px',
-                    fontSize: '13.5px',
-                    fontWeight: activeArticleId === art.id ? 700 : 500,
-                    textAlign: 'left',
-                    cursor: 'pointer',
-                    transition: 'all 0.2s ease',
-                  }}
-                  onMouseEnter={(e) => {
-                    if (activeArticleId !== art.id) {
-                      e.currentTarget.style.color = '#ffffff';
-                      e.currentTarget.style.background = 'rgba(255, 255, 255, 0.03)';
-                    }
-                  }}
-                  onMouseLeave={(e) => {
-                    if (activeArticleId !== art.id) {
-                      e.currentTarget.style.color = '#b7b7b7';
-                      e.currentTarget.style.background = 'transparent';
-                    }
-                  }}
-                >
-                  <span style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', marginRight: '5px' }}>
-                    {art.title}
-                  </span>
-                  {activeArticleId === art.id && <ChevronRight size={14} style={{ flexShrink: 0 }} />}
-                </button>
-              ))}
-            </div>
-          ))}
+          {/* SIDEBAR NAVIGATION ITEMS */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+            {filteredArticles.length === 0 ? (
+              <div style={{ color: 'rgba(255,255,255,0.4)', fontSize: '13px', textAlign: 'center', padding: '20px 0' }}>
+                Nenhum guia encontrado.
+              </div>
+            ) : (
+              Object.entries(categoriesMap).map(([catId, cat]) => (
+                <div key={catId} style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                  {/* Category Header */}
+                  <div 
+                    style={{ 
+                      color: 'rgba(255, 255, 255, 0.35)', 
+                      fontWeight: 800, 
+                      fontSize: '11px', 
+                      letterSpacing: '1.2px', 
+                      textTransform: 'uppercase',
+                      paddingLeft: '10px',
+                      marginBottom: '4px'
+                    }}
+                  >
+                    {cat.label}
+                  </div>
+
+                  {/* Links under category */}
+                  {cat.items.map((art) => (
+                    <button
+                      key={art.id}
+                      onClick={() => setActiveArticleId(art.id)}
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        width: '100%',
+                        background: currentArticle?.id === art.id ? 'rgba(229, 54, 55, 0.1)' : 'transparent',
+                        color: currentArticle?.id === art.id ? '#e53637' : '#b7b7b7',
+                        border: 'none',
+                        borderRadius: '4px',
+                        padding: '10px 12px',
+                        fontSize: '13.5px',
+                        fontWeight: currentArticle?.id === art.id ? 700 : 500,
+                        textAlign: 'left',
+                        cursor: 'pointer',
+                        transition: 'all 0.2s ease',
+                      }}
+                      onMouseEnter={(e) => {
+                        if (currentArticle?.id !== art.id) {
+                          e.currentTarget.style.color = '#ffffff';
+                          e.currentTarget.style.background = 'rgba(255, 255, 255, 0.03)';
+                        }
+                      }}
+                      onMouseLeave={(e) => {
+                        if (currentArticle?.id !== art.id) {
+                          e.currentTarget.style.color = '#b7b7b7';
+                          e.currentTarget.style.background = 'transparent';
+                        }
+                      }}
+                    >
+                      <span style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', marginRight: '5px' }}>
+                        {art.title}
+                      </span>
+                      {currentArticle?.id === art.id && <ChevronRight size={14} style={{ flexShrink: 0 }} />}
+                    </button>
+                  ))}
+                </div>
+              ))
+            )}
+          </div>
         </aside>
 
         {/* MAIN CONTENT AREA */}
@@ -379,110 +448,127 @@ export const Tutoriais: React.FC = () => {
             gap: '20px'
           }}
         >
-          {/* Breadcrumbs */}
-          <nav 
-            style={{ 
-              display: 'flex', 
-              alignItems: 'center', 
-              gap: '8px', 
-              fontSize: '13px', 
-              color: 'rgba(255, 255, 255, 0.4)',
-              fontWeight: 500 
-            }}
-          >
-            <span>Central de Guias</span>
-            <ChevronRight size={12} />
-            <span>{currentArticle.categoryLabel}</span>
-            <ChevronRight size={12} />
-            <span style={{ color: '#ffffff' }}>{currentArticle.title}</span>
-          </nav>
-
-          {/* Document Content */}
-          <article style={{ minHeight: '350px', marginTop: '10px' }}>
-            {currentArticle.content}
-          </article>
-
-          {/* Next/Previous Article Navigation */}
-          <div 
-            style={{ 
-              display: 'flex', 
-              justifyContent: 'space-between', 
-              alignItems: 'center', 
-              borderTop: '1px solid rgba(255,255,255,0.08)', 
-              paddingTop: '30px', 
-              marginTop: '40px',
-              gap: '20px'
-            }}
-          >
-            {prevArticle ? (
-              <button
-                onClick={() => setActiveArticleId(prevArticle.id)}
-                style={{
-                  flex: 1,
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '15px',
-                  background: 'rgba(255,255,255,0.02)',
-                  border: '1px solid rgba(255,255,255,0.05)',
-                  borderRadius: '8px',
-                  padding: '16px 20px',
-                  color: '#ffffff',
-                  textAlign: 'left',
-                  cursor: 'pointer',
-                  transition: 'all 0.2s ease'
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.borderColor = '#e53637';
-                  e.currentTarget.style.background = 'rgba(229, 54, 55, 0.02)';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.borderColor = 'rgba(255,255,255,0.05)';
-                  e.currentTarget.style.background = 'rgba(255,255,255,0.02)';
+          {currentArticle ? (
+            <>
+              {/* Breadcrumbs */}
+              <nav 
+                style={{ 
+                  display: 'flex', 
+                  alignItems: 'center', 
+                  gap: '8px', 
+                  fontSize: '13px', 
+                  color: 'rgba(255, 255, 255, 0.4)',
+                  fontWeight: 500 
                 }}
               >
-                <ArrowLeft size={18} style={{ color: '#e53637', flexShrink: 0 }} />
-                <div>
-                  <div style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', fontWeight: 700, letterSpacing: '0.5px' }}>Anterior</div>
-                  <div style={{ fontSize: '14.5px', fontWeight: 700, marginTop: '2px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{prevArticle.title}</div>
-                </div>
-              </button>
-            ) : <div style={{ flex: 1 }} />}
+                <span>Central de Guias</span>
+                <ChevronRight size={12} />
+                <span>{currentArticle.categoryLabel}</span>
+                <ChevronRight size={12} />
+                <span style={{ color: '#ffffff' }}>{currentArticle.title}</span>
+              </nav>
 
-            {nextArticle ? (
-              <button
-                onClick={() => setActiveArticleId(nextArticle.id)}
-                style={{
-                  flex: 1,
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'flex-end',
-                  gap: '15px',
-                  background: 'rgba(255,255,255,0.02)',
-                  border: '1px solid rgba(255,255,255,0.05)',
-                  borderRadius: '8px',
-                  padding: '16px 20px',
-                  color: '#ffffff',
-                  textAlign: 'right',
-                  cursor: 'pointer',
-                  transition: 'all 0.2s ease'
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.borderColor = '#e53637';
-                  e.currentTarget.style.background = 'rgba(229, 54, 55, 0.02)';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.borderColor = 'rgba(255,255,255,0.05)';
-                  e.currentTarget.style.background = 'rgba(255,255,255,0.02)';
+              {/* Document Content */}
+              <article style={{ minHeight: '350px', marginTop: '10px' }}>
+                {currentArticle.content}
+              </article>
+
+              {/* Next/Previous Article Navigation */}
+              <div 
+                style={{ 
+                  display: 'flex', 
+                  justifyContent: 'space-between', 
+                  alignItems: 'center', 
+                  borderTop: '1px solid rgba(255,255,255,0.08)', 
+                  paddingTop: '30px', 
+                  marginTop: '40px',
+                  gap: '20px'
                 }}
               >
-                <div>
-                  <div style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', fontWeight: 700, letterSpacing: '0.5px' }}>Próximo</div>
-                  <div style={{ fontSize: '14.5px', fontWeight: 700, marginTop: '2px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{nextArticle.title}</div>
-                </div>
-                <ArrowRight size={18} style={{ color: '#e53637', flexShrink: 0 }} />
-              </button>
-            ) : <div style={{ flex: 1 }} />}
-          </div>
+                {prevArticle ? (
+                  <button
+                    onClick={() => {
+                      setActiveArticleId(prevArticle.id);
+                      window.scrollTo({ top: 0, behavior: 'smooth' });
+                    }}
+                    style={{
+                      flex: 1,
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '15px',
+                      background: 'rgba(255,255,255,0.02)',
+                      border: '1px solid rgba(255,255,255,0.05)',
+                      borderRadius: '8px',
+                      padding: '16px 20px',
+                      color: '#ffffff',
+                      textAlign: 'left',
+                      cursor: 'pointer',
+                      transition: 'all 0.2s ease',
+                      maxWidth: '48%'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.borderColor = '#e53637';
+                      e.currentTarget.style.background = 'rgba(229, 54, 55, 0.02)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.borderColor = 'rgba(255,255,255,0.05)';
+                      e.currentTarget.style.background = 'rgba(255,255,255,0.02)';
+                    }}
+                  >
+                    <ArrowLeft size={18} style={{ color: '#e53637', flexShrink: 0 }} />
+                    <div style={{ minWidth: 0, flex: 1 }}>
+                      <div style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', fontWeight: 700, letterSpacing: '0.5px' }}>Anterior</div>
+                      <div style={{ fontSize: '14.5px', fontWeight: 700, marginTop: '2px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{prevArticle.title}</div>
+                    </div>
+                  </button>
+                ) : <div style={{ flex: 1 }} />}
+
+                {nextArticle ? (
+                  <button
+                    onClick={() => {
+                      setActiveArticleId(nextArticle.id);
+                      window.scrollTo({ top: 0, behavior: 'smooth' });
+                    }}
+                    style={{
+                      flex: 1,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'flex-end',
+                      gap: '15px',
+                      background: 'rgba(255,255,255,0.02)',
+                      border: '1px solid rgba(255,255,255,0.05)',
+                      borderRadius: '8px',
+                      padding: '16px 20px',
+                      color: '#ffffff',
+                      textAlign: 'right',
+                      cursor: 'pointer',
+                      transition: 'all 0.2s ease',
+                      maxWidth: '48%'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.borderColor = '#e53637';
+                      e.currentTarget.style.background = 'rgba(229, 54, 55, 0.02)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.borderColor = 'rgba(255,255,255,0.05)';
+                      e.currentTarget.style.background = 'rgba(255,255,255,0.02)';
+                    }}
+                  >
+                    <div style={{ minWidth: 0, flex: 1 }}>
+                      <div style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', fontWeight: 700, letterSpacing: '0.5px' }}>Próximo</div>
+                      <div style={{ fontSize: '14.5px', fontWeight: 700, marginTop: '2px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{nextArticle.title}</div>
+                    </div>
+                    <ArrowRight size={18} style={{ color: '#e53637', flexShrink: 0 }} />
+                  </button>
+                ) : <div style={{ flex: 1 }} />}
+              </div>
+            </>
+          ) : (
+            <div style={{ textAlign: 'center', padding: '100px 0' }}>
+              <h2 style={{ color: '#ffffff' }}>Nenhum artigo disponível</h2>
+              <p style={{ color: '#b7b7b7' }}>Limpe a pesquisa para ver os artigos do Clube.</p>
+            </div>
+          )}
         </main>
       </div>
     </>
