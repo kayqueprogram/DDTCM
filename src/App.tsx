@@ -5,6 +5,7 @@ import { ModList } from './pages/ModList';
 import { ModDetails } from './pages/ModDetails';
 import { Equipe } from './pages/Equipe';
 import { Recrutamento } from './pages/Recrutamento';
+import { Tutoriais } from './pages/Tutoriais';
 import { Chatbot } from './components/Chatbot';
 import { ArrowUp, Menu, X } from 'lucide-react';
 import { Helmet } from 'react-helmet-async';
@@ -97,6 +98,9 @@ export const AppContent: React.FC = () => {
                     <li className={location.pathname === '/recrutamento' ? 'active' : ''}>
                       <Link to="/recrutamento">Recrutamento</Link>
                     </li>
+                    <li className={location.pathname === '/tutoriais' ? 'active' : ''}>
+                      <Link to="/tutoriais">Tutoriais</Link>
+                    </li>
                   </ul>
                 </nav>
               </div>
@@ -113,6 +117,7 @@ export const AppContent: React.FC = () => {
           <Route path="/mod/:slug" element={<ModDetails />} />
           <Route path="/equipe" element={<Equipe />} />
           <Route path="/recrutamento" element={<Recrutamento />} />
+          <Route path="/tutoriais" element={<Tutoriais />} />
 
         </Routes>
       </main>
@@ -150,6 +155,7 @@ export const AppContent: React.FC = () => {
                   <li><Link to="/mods">Lista de Mods</Link></li>
                   <li><Link to="/equipe">Equipe</Link></li>
                   <li><Link to="/recrutamento">Recrutamento</Link></li>
+                  <li><Link to="/tutoriais">Tutoriais</Link></li>
 
                 </ul>
               </div>
