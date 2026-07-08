@@ -146,23 +146,41 @@ export const Chatbot: React.FC = () => {
       const finalData = { ...suggestionData, description: text };
       setSuggestionData(finalData);
       setCurrentStep('finished_suggestion');
+      setIsTyping(true);
 
-      addBotMessage(
-        `Obrigado! Sua sugestão de ${(finalData.type || 'sugestão').toLowerCase()} para o mod "${finalData.modName || ''}" foi formatada. 
-
-Para que nossa equipe veja e analise de forma oficial, copie o texto abaixo e nos envie pelo Discord ou e-mail:
-
-------------------
-📝 SUGESTÃO: ${finalData.type || ''}
-🎮 MOD: ${finalData.modName || ''}
-💡 DETALHES: ${text}
-------------------`,
-        [
-          { label: 'Abrir nosso Discord', value: 'go_to_discord' },
-          { label: 'Voltar ao início', value: 'go_start' },
-        ],
-        1200
-      );
+      fetch('/api/submit-suggestion', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          type: finalData.type,
+          modName: finalData.modName,
+          details: text,
+        }),
+      })
+        .then((res) => {
+          setIsTyping(false);
+          if (res.ok) {
+            addBotMessage(
+              `Obrigado! Enviei a sua sugestão de ${(finalData.type || 'sugestão').toLowerCase()} para o mod "${finalData.modName || ''}" diretamente para a equipe no Discord de forma automática! 🚀\n\nCaso queira acompanhar, sinta-se à vontade para entrar no nosso servidor oficial.`,
+              [
+                { label: 'Abrir nosso Discord', value: 'go_to_discord' },
+                { label: 'Voltar ao início', value: 'go_start' },
+              ]
+            );
+          } else {
+            throw new Error('Falha no envio');
+          }
+        })
+        .catch(() => {
+          setIsTyping(false);
+          addBotMessage(
+            `Obrigado! Como o envio automático não pôde ser completado, por favor, envie a sua sugestão copiando o texto abaixo:\n\n------------------\n📝 SUGESTÃO: ${finalData.type || ''}\n🎮 MOD: ${finalData.modName || ''}\n💡 DETALHES: ${text}\n------------------`,
+            [
+              { label: 'Abrir nosso Discord', value: 'go_to_discord' },
+              { label: 'Voltar ao início', value: 'go_start' },
+            ]
+          );
+        });
     } else {
       // General user text typing
       addBotMessage('Desculpe, eu sou apenas uma assistente de auxílio rápido. Por favor, selecione uma das opções abaixo para que eu possa te ajudar melhor:', [
