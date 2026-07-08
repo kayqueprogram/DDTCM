@@ -20,6 +20,7 @@ const urls = [
   { path: '/', priority: '1.0', changefreq: 'daily' },
   { path: '/mods', priority: '0.9', changefreq: 'weekly' },
   { path: '/equipe', priority: '0.7', changefreq: 'monthly' },
+  { path: '/recrutamento', priority: '0.8', changefreq: 'monthly' },
   ...mods.map((mod) => ({ path: `/mod/${mod.slug}`, priority: '0.8', changefreq: 'monthly' })),
 ];
 

@@ -44,34 +44,34 @@ interface Slide {
 const slides: Slide[] = [
   {
     bg: '/img/label/label1.jpg',
-    label: 'Seja bem-vindo!',
-    title: 'A Doki Doki Translate Club Memorial',
-    description: 'Um acervo organizado da Doki Doki Translate Club, Doki Doki Translate Company e Memorial para encontrar traduções, mods e projetos de DDLC em português.',
+    label: 'ESTAMOS DE VOLTA!',
+    title: 'A Doki Doki Translate Club Retorna!',
+    description: 'O que antes era apenas um memorial agora volta a ganhar vida. Iniciamos uma nova fase para resgatar e revisar traduções de mods de Doki Doki Literature Club.',
     actionText: 'Ver lista de mods',
     actionLink: '/mods'
   },
   {
     bg: '/img/label/label2.jpg',
-    label: 'Aproveitem',
-    title: 'Espero que seja o que queriam.',
-    description: 'A pedidos, reunimos novamente traduções da nossa antiga equipe.',
-    actionText: 'Ver lista de mods',
-    actionLink: '/mods'
+    label: 'Foco Inicial',
+    title: 'Revisão das Traduções Existentes',
+    description: 'Para garantir o máximo de fidelidade e qualidade, estamos revisando minuciosamente todas as traduções de mods já lançadas. E você pode nos ajudar!',
+    actionText: 'Saiba como ajudar',
+    actionLink: '/recrutamento'
   },
   {
     bg: '/img/label/label3.jpg',
-    label: 'Explore!',
-    title: 'Sinta-se à vontade',
-    description: 'Navegue pelos favoritos da comunidade e pelos projetos adicionados recentemente.',
-    actionText: 'Ver lista de mods',
-    actionLink: '/mods'
+    label: 'RECRUTAMENTO ABERTO!',
+    title: 'Junte-se ao Nosso Clube de Tradução',
+    description: 'Procuramos revisores, tradutores, editores de imagens e programadores. Quer fazer parte dessa nova jornada conosco?',
+    actionText: 'Quero me candidatar',
+    actionLink: '/recrutamento'
   },
   {
     bg: '/img/label/label4.jpg',
-    label: 'Futuro!',
-    title: 'Teremos mais traduções de DDLC?',
-    description: 'O memorial segue como uma forma simples de preservar e organizar o que já foi lançado.',
-    actionText: 'Ver lista de mods',
+    label: 'Explore o Acervo',
+    title: 'Conheça Nossos Projetos',
+    description: 'Enquanto nos organizamos, navegue pelos favoritos da comunidade e pelos mods já disponíveis em português.',
+    actionText: 'Ver todos os mods',
     actionLink: '/mods'
   }
 ];
