@@ -422,7 +422,7 @@ export const Home: React.FC = () => {
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
                     {/* Apoia.se Card */}
                     <a
-                      href="https://apoia.se/ddtc"
+                      href="https://apoia.se/doki-doki-translate-company"
                       target="_blank"
                       rel="noopener noreferrer"
                       style={{
