@@ -411,7 +411,7 @@ export const Home: React.FC = () => {
               <div className="product__sidebar">
                 
                 {/* Top Views Panel */}
-                <div className="product__sidebar__view top-views" style={{ background: '#121230', padding: '25px', borderRadius: '8px', marginBottom: '30px' }}>
+                <div className="product__sidebar__view top-views" style={{ background: '#121230', padding: '25px', borderRadius: '8px', marginBottom: '30px', position: 'relative' }}>
                   <div className="section-title" style={{ marginBottom: '20px' }}>
                     <h5 style={{ color: '#ffffff', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1px' }}>Top Views</h5>
                   </div>
