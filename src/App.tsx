@@ -6,6 +6,7 @@ import { ModDetails } from './pages/ModDetails';
 import { Equipe } from './pages/Equipe';
 import { ArrowUp, Menu, X } from 'lucide-react';
 import { Helmet } from 'react-helmet-async';
+import { SITE_NAME, SITE_DESCRIPTION } from './lib/site';
 
 const ScrollToTop = () => {
   const { pathname } = useLocation();
@@ -35,6 +36,8 @@ export const AppContent: React.FC = () => {
           name="google-site-verification"
           content="algdMFHXRk52i1DJ7sOjrVivfiR0zYlgDwMzPS4BO80"
         />
+        <meta name="application-name" content={SITE_NAME} />
+        <meta name="description" content={SITE_DESCRIPTION} />
       </Helmet>
 
       <ScrollToTop />
@@ -49,7 +52,7 @@ export const AppContent: React.FC = () => {
                   <img
                     className="header__brand-icon"
                     src="/css/favicon/favicon_io/android-chrome-192x192.png"
-                    alt="Doki Doki Translate Club"
+                  alt="Doki Doki Translate Club Memorial"
                     style={{ width: '52px', height: '52px', maxHeight: 'none', borderRadius: '50%' }}
                   />
                   <span className="header__brand" style={{ fontSize: '28px', fontWeight: 900, letterSpacing: '1px', color: '#ffffff' }}>
@@ -125,7 +128,7 @@ export const AppContent: React.FC = () => {
                   <img
                     className="header__brand-icon"
                     src="/css/favicon/favicon_io/android-chrome-192x192.png"
-                    alt="Doki Doki Translate Club"
+                    alt="Doki Doki Translate Club Memorial"
                     style={{ width: '32px', height: '32px', filter: 'grayscale(100%)' }}
                   />
                   <span className="header__brand" style={{ fontSize: '18px', fontWeight: 800, color: 'rgba(255,255,255,0.6)' }}>

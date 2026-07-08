@@ -3,6 +3,8 @@ import { useParams, Link } from 'react-router-dom';
 import type { Mod } from '../types/mod';
 import modsDataRaw from '../data/mods.json';
 import { AlertTriangle, ArrowLeft, Laptop, Smartphone, Star } from 'lucide-react';
+import { Seo } from '../components/Seo';
+import { SITE_NAME, SITE_URL } from '../lib/site';
 
 const modsData: Mod[] = modsDataRaw as Mod[];
 
@@ -14,6 +16,12 @@ export const ModDetails: React.FC = () => {
   if (!mod) {
     return (
       <div className="container" style={{ padding: '100px 0', textAlign: 'center' }}>
+        <Seo
+          title="Mod não encontrado"
+          description="O mod solicitado não existe ou foi removido do memorial."
+          canonicalPath={`/mod/${slug ?? ''}`}
+          noindex
+        />
         <AlertTriangle size={48} style={{ color: '#e53637', marginBottom: '20px' }} />
         <h3 style={{ color: '#fff', marginBottom: '15px' }}>Mod não encontrado</h3>
         <p style={{ color: '#b7b7b7', marginBottom: '30px' }}>O mod que você está procurando não existe ou foi removido.</p>
@@ -37,6 +45,39 @@ export const ModDetails: React.FC = () => {
 
   return (
     <>
+      <Seo
+        title={mod.title}
+        description={mod.description.join(' ')}
+        canonicalPath={`/mod/${mod.slug}`}
+        image={mod.image}
+        keywords={[
+          mod.title,
+          mod.developer,
+          mod.translator,
+          mod.category,
+          SITE_NAME,
+          'DDLC PT-BR',
+          'visual novel',
+        ]}
+        structuredData={{
+          '@context': 'https://schema.org',
+          '@type': 'VideoGame',
+          name: mod.title,
+          description: mod.description.join(' '),
+          image: mod.image.startsWith('http') ? mod.image : `${SITE_URL}${mod.image}`,
+          url: `${SITE_URL}/mod/${mod.slug}`,
+          genre: mod.category,
+          author: {
+            '@type': 'Organization',
+            name: mod.developer,
+          },
+          publisher: {
+            '@type': 'Organization',
+            name: SITE_NAME,
+          },
+        }}
+      />
+
       {/* Breadcrumb */}
       <div className="breadcrumb-option" style={{ padding: '20px 0 15px 0' }}>
         <div className="container">
@@ -77,7 +118,7 @@ export const ModDetails: React.FC = () => {
               <div className="col-lg-9 col-md-8">
                 <div className="anime__details__text">
                   <div className="anime__details__title" style={{ marginBottom: '10px' }}>
-                    <h3 style={{ color: '#ffffff', fontSize: '30px', fontWeight: 700 }}>{mod.title}</h3>
+                    <h1 style={{ color: '#ffffff', fontSize: '30px', fontWeight: 700 }}>{mod.title}</h1>
                   </div>
                   
                   {renderStars()}

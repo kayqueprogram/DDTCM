@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom';
 import type { Mod } from '../types/mod';
 import modsDataRaw from '../data/mods.json';
 import { Heart, Clock, Grid as GridIcon, Eye, ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Seo } from '../components/Seo';
+import { SITE_ALTERNATE_NAME, SITE_DESCRIPTION, SITE_NAME, SITE_URL } from '../lib/site';
 
 
 const modsData: Mod[] = modsDataRaw as Mod[];
@@ -44,7 +46,7 @@ const slides: Slide[] = [
     bg: '/img/label/label1.jpg',
     label: 'Seja bem-vindo!',
     title: 'A Doki Doki Translate Club Memorial',
-    description: 'Um acervo organizado para encontrar traduções, mods e projetos de DDLC em português.',
+    description: 'Um acervo organizado da Doki Doki Translate Club, Doki Doki Translate Company e Memorial para encontrar traduções, mods e projetos de DDLC em português.',
     actionText: 'Ver lista de mods',
     actionLink: '/mods'
   },
@@ -127,9 +129,44 @@ export const Home: React.FC = () => {
 
   return (
     <>
+      <Seo
+        title="Doki Doki Translate Club Memorial"
+        description={SITE_DESCRIPTION}
+        canonicalPath="/"
+        keywords={[
+          'Doki Doki Translate Club',
+          SITE_ALTERNATE_NAME,
+          'Doki Doki Translate Club Memorial',
+          'DDTC',
+          'DDLC PT-BR',
+          'visual novels traduzidas',
+          'mods de DDLC',
+        ]}
+        structuredData={[
+          {
+            '@context': 'https://schema.org',
+            '@type': 'Organization',
+            name: SITE_NAME,
+            alternateName: SITE_ALTERNATE_NAME,
+            url: SITE_URL,
+            logo: `${SITE_URL}/img/logo.png`,
+          },
+          {
+            '@context': 'https://schema.org',
+            '@type': 'WebSite',
+            name: SITE_NAME,
+            alternateName: SITE_ALTERNATE_NAME,
+            url: SITE_URL,
+          },
+        ]}
+      />
+
       {/* Hero Section */}
       <section className="hero">
         <div className="container">
+          <h1 className="sr-only">
+            Doki Doki Translate Club Memorial e acervo de traduções de DDLC
+          </h1>
           <div className="hero__slider-container" style={{ position: 'relative', overflow: 'hidden', borderRadius: '4px' }}>
             {slides.map((slide, index) => (
               <div

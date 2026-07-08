@@ -1,8 +1,10 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import type { Mod } from '../types/mod';
 import modsDataRaw from '../data/mods.json';
 import { Search, X, Laptop, Smartphone } from 'lucide-react';
+import { Seo } from '../components/Seo';
+import { SITE_ALTERNATE_NAME, SITE_NAME, SITE_URL } from '../lib/site';
 
 const modsData: Mod[] = modsDataRaw as Mod[];
 const MODS_PER_PAGE = 12;
@@ -51,7 +53,7 @@ export const ModList: React.FC = () => {
   }, [searchQuery, selectedCategory, selectedPlatform]);
 
   // Reset pagination when filter changes
-  useMemo(() => {
+  useEffect(() => {
     setCurrentPage(1);
   }, [searchQuery, selectedCategory, selectedPlatform]);
 
@@ -68,6 +70,34 @@ export const ModList: React.FC = () => {
 
   return (
     <>
+      <Seo
+        title="Lista de visual novels traduzidas"
+        description="Lista completa de traduções, mods e visual novels de DDLC no memorial da Doki Doki Translate Club, Doki Doki Translate Company e comunidade."
+        canonicalPath="/mods"
+        keywords={[
+          'visual novels traduzidas',
+          'Doki Doki Translate Club',
+          SITE_ALTERNATE_NAME,
+          'DDLC PT-BR',
+          'mods de DDLC',
+          'traduções de DDLC',
+          'catálogo DDTC',
+        ]}
+        structuredData={{
+          '@context': 'https://schema.org',
+          '@type': 'ItemList',
+          name: `${SITE_NAME} - Lista de mods`,
+          url: `${SITE_URL}/mods`,
+          numberOfItems: modsData.length,
+          itemListElement: modsData.slice(0, 30).map((mod, index) => ({
+            '@type': 'ListItem',
+            position: index + 1,
+            url: `${SITE_URL}/mod/${mod.slug}`,
+            name: mod.title,
+          })),
+        }}
+      />
+
       {/* Breadcrumb */}
       <div className="breadcrumb-option" style={{ padding: '20px 0 15px 0' }}>
         <div className="container">
@@ -94,14 +124,17 @@ export const ModList: React.FC = () => {
                   <div className="row align-items-center">
                     <div className="col-md-6">
                       <div className="section-title" style={{ margin: 0 }}>
-                        <h4 style={{ color: '#ffffff', fontWeight: 600, textTransform: 'uppercase', position: 'relative', paddingLeft: '20px' }}>
+                        <h1 style={{ color: '#ffffff', fontWeight: 600, textTransform: 'uppercase', position: 'relative', paddingLeft: '20px', fontSize: '28px' }}>
                           <span style={{ position: 'absolute', left: 0, top: 0, width: '4px', height: '100%', backgroundColor: '#e53637' }} />
                           Todas as Traduções ({filteredMods.length})
-                        </h4>
+                        </h1>
                       </div>
                     </div>
                   </div>
                 </div>
+                <p style={{ color: '#b7b7b7', marginBottom: '25px', maxWidth: '900px' }}>
+                  Explore o catálogo completo de traduções da Doki Doki Translate Club Memorial, com filtros por gênero, plataforma e busca por título, tradutor ou desenvolvedor.
+                </p>
 
                 {/* Filters & Search Panel */}
                 <div className="filters-panel" style={{ background: '#121230', padding: '25px', borderRadius: '8px', marginBottom: '35px' }}>
