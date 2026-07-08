@@ -17,8 +17,11 @@ export const Chatbot: React.FC = () => {
   const [currentStep, setCurrentStep] = useState<string>('start');
   const [suggestionData, setSuggestionData] = useState<{
     type?: string;
+    userName?: string;
     modName?: string;
     description?: string;
+    contact?: string;
+    ticketId?: string;
   }>({});
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -87,12 +90,12 @@ export const Chatbot: React.FC = () => {
 
     if (value === 'suggest_translation') {
       setSuggestionData({ type: 'Tradução' });
-      setCurrentStep('ask_mod_name');
-      addBotMessage('Que legal! Qual é o nome do mod de DDLC que você gostaria de sugerir para tradução?');
+      setCurrentStep('ask_user_name');
+      addBotMessage('Que legal! Antes de começarmos, por favor, me diga qual é o seu nome ou nickname.');
     } else if (value === 'suggest_review') {
       setSuggestionData({ type: 'Revisão' });
-      setCurrentStep('ask_mod_name');
-      addBotMessage('Entendido. Qual o nome do mod onde você encontrou um erro ou quer sugerir melhorias de tradução?');
+      setCurrentStep('ask_user_name');
+      addBotMessage('Entendido! Antes de detalhar o erro, por favor, me diga qual é o seu nome ou nickname.');
     } else if (value === 'recrutamento_info') {
       addBotMessage(
         'Estamos recrutando ativamente revisores, tradutores, editores de imagem e programadores! Você pode ler todos os detalhes e se candidatar na nossa página de Recrutamento.',
@@ -136,14 +139,30 @@ export const Chatbot: React.FC = () => {
     addUserMessage(text);
     setInputVal('');
 
-    if (currentStep === 'ask_mod_name') {
+    if (currentStep === 'ask_user_name') {
+      setSuggestionData((prev) => ({ ...prev, userName: text }));
+      setCurrentStep('ask_mod_name');
+      addBotMessage(`Prazer em conhecer você, ${text}! Qual é o nome do mod de DDLC em questão?`);
+    } else if (currentStep === 'ask_mod_name') {
       setSuggestionData((prev) => ({ ...prev, modName: text }));
       setCurrentStep('ask_details');
-      addBotMessage(
-        `Registrado: "${text}". Agora, por favor, detalhe sua sugestão ou erro encontrado (indique as falhas, links ou textos se preferir):`
-      );
+      addBotMessage(`Registrado o mod "${text}". Agora, por favor, detalhe a sua sugestão ou o erro de revisão encontrado:`);
     } else if (currentStep === 'ask_details') {
-      const finalData = { ...suggestionData, description: text };
+      setSuggestionData((prev) => ({ ...prev, description: text }));
+      setCurrentStep('ask_contact');
+      addBotMessage('Certo! Se quiser que a nossa equipe possa te dar um retorno sobre a sua sugestão, digite seu Discord ou e-mail (ou digite "não" para enviar anonimamente):');
+    } else if (currentStep === 'ask_contact') {
+      const isAnon = text.toLowerCase() === 'não' || text.toLowerCase() === 'nao' || text.toLowerCase() === 'anônimo' || text.toLowerCase() === 'anonimo';
+      const contactVal = isAnon ? 'Anônimo' : text;
+      
+      const ticketNum = Math.floor(1000 + Math.random() * 9000);
+      const ticketId = `#DDTC-${ticketNum}`;
+
+      const finalData = { 
+        ...suggestionData, 
+        contact: contactVal,
+        ticketId
+      };
       setSuggestionData(finalData);
       setCurrentStep('finished_suggestion');
       setIsTyping(true);
@@ -156,13 +175,20 @@ export const Chatbot: React.FC = () => {
       if (isDev && localWebhook) {
         // Envio direto via client side em desenvolvimento local
         const embed = {
-          title: `📝 Nova Sugestão de ${finalData.type || 'Sugestão'}`,
+          title: `🎫 Ticket ${ticketId} - Sugestão de ${finalData.type || 'Sugestão'}`,
           color: finalData.type === 'Tradução' ? 15021623 : 5793010,
+          author: {
+            name: finalData.userName || 'Anônimo'
+          },
           fields: [
             { name: '🎮 Mod', value: finalData.modName || 'Não especificado', inline: true },
-            { name: '💡 Detalhes / Correção', value: text || 'Não especificado' }
+            { name: '📞 Contato', value: contactVal, inline: true },
+            { name: '💡 Detalhes / Correção', value: finalData.description || 'Não especificado' }
           ],
-          timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString(),
+          footer: {
+            text: 'Enviado via MoniBot 🎀'
+          }
         };
 
         fetchPromise = fetch(localWebhook, {
@@ -178,7 +204,10 @@ export const Chatbot: React.FC = () => {
           body: JSON.stringify({
             type: finalData.type,
             modName: finalData.modName,
-            details: text,
+            details: finalData.description,
+            userName: finalData.userName,
+            contact: contactVal,
+            ticketId: ticketId
           }),
         });
       }
@@ -188,7 +217,7 @@ export const Chatbot: React.FC = () => {
           setIsTyping(false);
           if (res.ok) {
             addBotMessage(
-              `Obrigado! Enviei a sua sugestão de ${(finalData.type || 'sugestão').toLowerCase()} para o mod "${finalData.modName || ''}" diretamente para a equipe no Discord de forma automática! 🚀\n\nCaso queira acompanhar, sinta-se à vontade para entrar no nosso servidor oficial.`,
+              `Tudo certo! Criei o Ticket **${ticketId}** e enviei diretamente para a equipe no Discord de forma automática! 🚀\n\nAgradecemos muito pela sua contribuição!`,
               [
                 { label: 'Abrir nosso Discord', value: 'go_to_discord' },
                 { label: 'Voltar ao início', value: 'go_start' },
@@ -201,7 +230,7 @@ export const Chatbot: React.FC = () => {
         .catch(() => {
           setIsTyping(false);
           addBotMessage(
-            `Obrigado! Como o envio automático não pôde ser completado, por favor, envie a sua sugestão copiando o texto abaixo:\n\n------------------\n📝 SUGESTÃO: ${finalData.type || ''}\n🎮 MOD: ${finalData.modName || ''}\n💡 DETALHES: ${text}\n------------------`,
+            `Criado o Ticket **${ticketId}**! Porém, como ocorreu uma falha no envio automático, envie no nosso Discord copiando as informações:\n\n------------------\n🎫 TICKET: ${ticketId}\n👤 AUTOR: ${finalData.userName || 'Anônimo'}\n📝 SUGESTÃO: ${finalData.type || ''}\n🎮 MOD: ${finalData.modName || ''}\n📞 CONTATO: ${contactVal}\n💡 DETALHES: ${finalData.description || ''}\n------------------`,
             [
               { label: 'Abrir nosso Discord', value: 'go_to_discord' },
               { label: 'Voltar ao início', value: 'go_start' },

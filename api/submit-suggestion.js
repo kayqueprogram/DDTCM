@@ -17,7 +17,7 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const { type, modName, details } = req.body;
+  const { type, modName, details, userName, contact, ticketId } = req.body;
   const webhookUrl = process.env.DISCORD_WEBHOOK_URL || process.env.VITE_DISCORD_WEBHOOK_URL;
 
   if (!webhookUrl) {
@@ -25,13 +25,20 @@ export default async function handler(req, res) {
   }
 
   const embed = {
-    title: `📝 Nova Sugestão de ${type}`,
+    title: `🎫 Ticket ${ticketId || ''} - Sugestão de ${type}`,
     color: type === 'Tradução' ? 15021623 : 5793010, // 0xe53637 or 0x5865f2
+    author: {
+      name: userName || 'Anônimo'
+    },
     fields: [
       { name: '🎮 Mod', value: modName || 'Não especificado', inline: true },
+      { name: '📞 Contato', value: contact || 'Não informado', inline: true },
       { name: '💡 Detalhes / Correção', value: details || 'Não especificado' }
     ],
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
+    footer: {
+      text: 'Enviado via MoniBot 🎀'
+    }
   };
 
   try {
