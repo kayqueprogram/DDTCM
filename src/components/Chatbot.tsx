@@ -241,14 +241,6 @@ export const Chatbot: React.FC = () => {
 
       if (isDev && localWebhook) {
         // Envio direto via client side em desenvolvimento local
-        const isValidUrl = (string: string) => {
-          try {
-            new URL(string);
-            return true;
-          } catch (_) {
-            return false;  
-          }
-        };
 
         const embed: any = {
           title: `🎫 Ticket ${ticketId} - Sugestão de ${finalData.type || 'Sugestão'}`,
@@ -268,11 +260,7 @@ export const Chatbot: React.FC = () => {
         };
 
         if (finalData.screenshot && finalData.screenshot !== 'Nenhum') {
-          if (isValidUrl(finalData.screenshot)) {
-            embed.image = { url: finalData.screenshot };
-          } else {
-            embed.fields.push({ name: '🖼️ Imagem / Print', value: finalData.screenshot });
-          }
+          embed.fields.push({ name: '🖼️ Imagem / Print', value: finalData.screenshot });
         }
 
         fetchPromise = fetch(localWebhook, {

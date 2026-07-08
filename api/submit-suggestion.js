@@ -51,11 +51,7 @@ export default async function handler(req, res) {
   };
 
   if (screenshot && screenshot !== 'Nenhum') {
-    if (isValidUrl(screenshot)) {
-      embed.image = { url: screenshot };
-    } else {
-      embed.fields.push({ name: '🖼️ Imagem / Print', value: screenshot });
-    }
+    embed.fields.push({ name: '🖼️ Imagem / Print', value: screenshot });
   }
 
   try {
