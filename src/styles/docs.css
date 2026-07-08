@@ -208,6 +208,11 @@
   margin-bottom: 28px;
 }
 
+.docs-breadcrumb button:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
 /* ---------- Article Header ---------- */
 .docs-article-title {
   color: #ffffff;

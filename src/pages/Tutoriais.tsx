@@ -940,9 +940,34 @@ export const Tutoriais: React.FC = () => {
             <>
               {/* Breadcrumb */}
               <nav className="docs-breadcrumb">
-                <span>Central de Guias</span>
+                <button
+                  onClick={() => navigateTo(ARTICLES[0].id)}
+                  style={{
+                    background: 'none', border: 'none', padding: 0, cursor: 'pointer',
+                    color: 'inherit', fontSize: 'inherit', fontFamily: 'inherit',
+                    transition: 'color 0.2s'
+                  }}
+                  onMouseEnter={e => (e.currentTarget.style.color = '#e53637')}
+                  onMouseLeave={e => (e.currentTarget.style.color = '')}
+                >
+                  Central de Guias
+                </button>
                 <ChevronRight size={12} />
-                <span>{currentArticle.categoryLabel}</span>
+                <button
+                  onClick={() => {
+                    const firstInCat = ARTICLES.find(a => a.category === currentArticle.category);
+                    if (firstInCat) navigateTo(firstInCat.id);
+                  }}
+                  style={{
+                    background: 'none', border: 'none', padding: 0, cursor: 'pointer',
+                    color: 'inherit', fontSize: 'inherit', fontFamily: 'inherit',
+                    transition: 'color 0.2s'
+                  }}
+                  onMouseEnter={e => (e.currentTarget.style.color = '#e53637')}
+                  onMouseLeave={e => (e.currentTarget.style.color = '')}
+                >
+                  {currentArticle.categoryLabel}
+                </button>
                 <ChevronRight size={12} />
                 <span style={{ color: 'rgba(255,255,255,0.75)' }}>{currentArticle.title}</span>
               </nav>
