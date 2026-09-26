@@ -33,21 +33,44 @@ export const Equipe: React.FC = () => {
   return (
     <>
       <Seo
-        title="Equipe"
-        description="Conheça a equipe por trás do memorial da Doki Doki Translate Club e da manutenção do acervo de traduções e mods."
+        title="Equipe de Tradução e Mantenedores — DDTC"
+        description="Conheça a equipe de tradutores, revisores e desenvolvedores responsáveis pelo acervo de mods de DDLC em português na Doki Doki Translate Company."
         canonicalPath="/equipe"
         keywords={[
           'equipe DDTC',
+          'tradutores ddlc brasil',
           'Doki Doki Translate Club',
           'Doki Doki Translate Company',
           'memorial DDLC',
+          'tradução visual novels'
         ]}
-        structuredData={{
-          '@context': 'https://schema.org',
-          '@type': 'Organization',
-          name: SITE_NAME,
-          url: SITE_URL,
-        }}
+        structuredData={[
+          {
+            '@context': 'https://schema.org',
+            '@type': 'AboutPage',
+            name: `Equipe | ${SITE_NAME}`,
+            description: 'Conheça a equipe e colaboradores da Doki Doki Translate Company.',
+            url: `${SITE_URL}/equipe`,
+          },
+          {
+            '@context': 'https://schema.org',
+            '@type': 'BreadcrumbList',
+            itemListElement: [
+              {
+                '@type': 'ListItem',
+                position: 1,
+                name: 'Home',
+                item: `${SITE_URL}/`,
+              },
+              {
+                '@type': 'ListItem',
+                position: 2,
+                name: 'Equipe',
+                item: `${SITE_URL}/equipe`,
+              },
+            ],
+          }
+        ]}
       />
 
       {/* Breadcrumb section */}

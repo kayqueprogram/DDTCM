@@ -130,19 +130,38 @@ export const Home: React.FC = () => {
   return (
     <>
       <Seo
-        title="Doki Doki Translate Club Memorial"
-        description={SITE_DESCRIPTION}
+        title="Baixar Mods de Doki Doki Literature Club em Português (PT-BR) — DDTC"
+        description="Acervo oficial de mods e traduções de Doki Doki Literature Club em português (PT-BR). Baixe mods para PC e Celular Android (APK) com instalação simples e suporte."
         canonicalPath="/"
         keywords={[
+          'baixar mods ddlc',
+          'mods doki doki literature club pt br',
+          'ddlc mods android apk',
+          'ddlc mods pc download',
+          'traduções de mods ddlc',
           'Doki Doki Translate Club',
+          'Doki Doki Translate Company',
           SITE_ALTERNATE_NAME,
           'Doki Doki Translate Club Memorial',
           'DDTC',
           'DDLC PT-BR',
-          'visual novels traduzidas',
-          'mods de DDLC',
+          'visual novels traduzidas'
         ]}
         structuredData={[
+          {
+            '@context': 'https://schema.org',
+            '@type': 'WebSite',
+            name: SITE_NAME,
+            alternateName: [SITE_ALTERNATE_NAME, 'DDTC Memorial', 'DDTCM'],
+            url: SITE_URL,
+            description: 'Acervo oficial de mods e traduções de Doki Doki Literature Club em português (PT-BR) para PC e Celular Android.',
+            inLanguage: 'pt-BR',
+            potentialAction: {
+              '@type': 'SearchAction',
+              target: `${SITE_URL}/mods?search={search_term_string}`,
+              'query-input': 'required name=search_term_string'
+            }
+          },
           {
             '@context': 'https://schema.org',
             '@type': 'Organization',
@@ -150,14 +169,7 @@ export const Home: React.FC = () => {
             alternateName: SITE_ALTERNATE_NAME,
             url: SITE_URL,
             logo: `${SITE_URL}/img/logo.png`,
-          },
-          {
-            '@context': 'https://schema.org',
-            '@type': 'WebSite',
-            name: SITE_NAME,
-            alternateName: SITE_ALTERNATE_NAME,
-            url: SITE_URL,
-          },
+          }
         ]}
       />
 

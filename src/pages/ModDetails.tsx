@@ -51,39 +51,108 @@ export const ModDetails: React.FC = () => {
     );
   };
 
+  const platforms = [
+    mod.pcDownload ? 'PC (Windows)' : '',
+    mod.apkDownload || mod.mobile ? 'Android (APK / Celular)' : ''
+  ].filter(Boolean).join(' e ');
+
+  const seoTitle = `Baixar Mod ${mod.title} PT-BR traduzido em Português${platforms ? ` para ${platforms}` : ''}`;
+  const firstDesc = mod.description[0] || '';
+  const seoDescription = `Baixar mod ${mod.title} traduzido em Português (PT-BR) para ${platforms || 'PC e Celular'}. Tradução por ${mod.translator}. ${firstDesc}`.slice(0, 160);
+
+  const keywords = [
+    `baixar mod ${mod.title}`,
+    `download mod ${mod.title} pt-br`,
+    `mod ${mod.title} traduzido`,
+    `mod ${mod.title} portugues`,
+    `mod ${mod.title} android apk`,
+    `mod ${mod.title} ddlc pc`,
+    'baixar mods ddlc celular',
+    'baixar mods ddlc android apk',
+    'baixar mods ddlc pc',
+    'mods ddlc traduzidos',
+    'doki doki literature club mods pt br',
+    mod.title,
+    mod.developer,
+    mod.translator,
+    mod.category,
+    SITE_NAME,
+    'DDLC PT-BR',
+    'visual novel'
+  ];
+
+  const structuredData: Record<string, unknown>[] = [
+    {
+      '@context': 'https://schema.org',
+      '@type': 'VideoGame',
+      name: `Mod ${mod.title} (DDLC PT-BR)`,
+      alternateName: mod.title,
+      description: seoDescription,
+      image: mod.image.startsWith('http') ? mod.image : `${SITE_URL}${mod.image}`,
+      url: `${SITE_URL}/mod/${mod.slug}`,
+      genre: mod.category,
+      inLanguage: 'pt-BR',
+      gamePlatform: [
+        ...(mod.pcDownload ? ['PC', 'Windows'] : []),
+        ...(mod.apkDownload || mod.mobile ? ['Android', 'Mobile'] : [])
+      ],
+      author: {
+        '@type': 'Organization',
+        name: mod.developer,
+      },
+      translator: {
+        '@type': 'Person',
+        name: mod.translator,
+      },
+      publisher: {
+        '@type': 'Organization',
+        name: SITE_NAME,
+        url: SITE_URL,
+      },
+      ...(mod.pcDownload || mod.apkDownload
+        ? {
+            downloadUrl: [
+              ...(mod.pcDownload ? [mod.pcDownload] : []),
+              ...(mod.apkDownload ? [mod.apkDownload] : [])
+            ]
+          }
+        : {})
+    },
+    {
+      '@context': 'https://schema.org',
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        {
+          '@type': 'ListItem',
+          position: 1,
+          name: 'Home',
+          item: `${SITE_URL}/`,
+        },
+        {
+          '@type': 'ListItem',
+          position: 2,
+          name: 'Mods & Visual Novels',
+          item: `${SITE_URL}/mods`,
+        },
+        {
+          '@type': 'ListItem',
+          position: 3,
+          name: mod.title,
+          item: `${SITE_URL}/mod/${mod.slug}`,
+        },
+      ],
+    }
+  ];
+
   return (
     <>
       <Seo
-        title={mod.title}
-        description={mod.description.join(' ')}
+        title={seoTitle}
+        description={seoDescription}
         canonicalPath={`/mod/${mod.slug}`}
         image={mod.image}
-        keywords={[
-          mod.title,
-          mod.developer,
-          mod.translator,
-          mod.category,
-          SITE_NAME,
-          'DDLC PT-BR',
-          'visual novel',
-        ]}
-        structuredData={{
-          '@context': 'https://schema.org',
-          '@type': 'VideoGame',
-          name: mod.title,
-          description: mod.description.join(' '),
-          image: mod.image.startsWith('http') ? mod.image : `${SITE_URL}${mod.image}`,
-          url: `${SITE_URL}/mod/${mod.slug}`,
-          genre: mod.category,
-          author: {
-            '@type': 'Organization',
-            name: mod.developer,
-          },
-          publisher: {
-            '@type': 'Organization',
-            name: SITE_NAME,
-          },
-        }}
+        keywords={keywords}
+        structuredData={structuredData}
       />
 
       {/* Breadcrumb */}

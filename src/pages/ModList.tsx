@@ -71,31 +71,63 @@ export const ModList: React.FC = () => {
   return (
     <>
       <Seo
-        title="Lista de visual novels traduzidas"
-        description="Lista completa de traduções, mods e visual novels de DDLC no memorial da Doki Doki Translate Club, Doki Doki Translate Company e comunidade."
+        title="Baixar Mods de Doki Doki Literature Club (DDLC) PT-BR — PC & Android APK"
+        description="Catálogo completo para baixar mods de Doki Doki Literature Club traduzidos em Português (PT-BR). Mods para PC e Celular (Android APK) com links diretos."
         canonicalPath="/mods"
         keywords={[
+          'baixar mods ddlc',
+          'baixar mods doki doki literature club',
+          'mods ddlc pt br',
+          'mods ddlc celular android apk',
+          'mods ddlc pc traduzidos',
+          'tradução mods ddlc',
           'visual novels traduzidas',
           'Doki Doki Translate Club',
+          'Doki Doki Translate Company',
           SITE_ALTERNATE_NAME,
           'DDLC PT-BR',
-          'mods de DDLC',
-          'traduções de DDLC',
-          'catálogo DDTC',
+          'catálogo DDTC'
         ]}
-        structuredData={{
-          '@context': 'https://schema.org',
-          '@type': 'ItemList',
-          name: `${SITE_NAME} - Lista de mods`,
-          url: `${SITE_URL}/mods`,
-          numberOfItems: modsData.length,
-          itemListElement: modsData.slice(0, 30).map((mod, index) => ({
-            '@type': 'ListItem',
-            position: index + 1,
-            url: `${SITE_URL}/mod/${mod.slug}`,
-            name: mod.title,
-          })),
-        }}
+        structuredData={[
+          {
+            '@context': 'https://schema.org',
+            '@type': 'CollectionPage',
+            name: 'Lista de Mods e Visual Novels de DDLC PT-BR',
+            description: 'Catálogo oficial de mods e visual novels traduzidos em português para PC e Celular Android.',
+            url: `${SITE_URL}/mods`,
+          },
+          {
+            '@context': 'https://schema.org',
+            '@type': 'ItemList',
+            name: `${SITE_NAME} - Lista de Mods DDLC`,
+            url: `${SITE_URL}/mods`,
+            numberOfItems: modsData.length,
+            itemListElement: modsData.slice(0, 30).map((mod, index) => ({
+              '@type': 'ListItem',
+              position: index + 1,
+              url: `${SITE_URL}/mod/${mod.slug}`,
+              name: `Mod ${mod.title} PT-BR`,
+            })),
+          },
+          {
+            '@context': 'https://schema.org',
+            '@type': 'BreadcrumbList',
+            itemListElement: [
+              {
+                '@type': 'ListItem',
+                position: 1,
+                name: 'Home',
+                item: `${SITE_URL}/`,
+              },
+              {
+                '@type': 'ListItem',
+                position: 2,
+                name: 'Visual Novels & Mods',
+                item: `${SITE_URL}/mods`,
+              },
+            ],
+          }
+        ]}
       />
 
       {/* Breadcrumb */}

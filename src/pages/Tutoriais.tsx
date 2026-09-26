@@ -880,9 +880,45 @@ export const Tutoriais: React.FC = () => {
   return (
     <>
       <Seo
-        title={currentArticle ? `${currentArticle.title} — Central de Guias` : 'Central de Guias & Documentação'}
-        description="Central de tutoriais, guias de instalação de mods e documentação da Doki Doki Translate Company."
+        title={currentArticle ? `${currentArticle.title} — Como Instalar Mods DDLC` : 'Como Instalar Mods de DDLC no PC e Celular Android — Tutoriais e Guias'}
+        description={currentArticle ? `Tutorial passo a passo: ${currentArticle.title}. Guia de instalação e configuração de mods de DDLC em português.` : 'Aprenda como instalar mods de Doki Doki Literature Club no PC (Steam, Windows, Linux, Mac) e no Celular Android (APK). Guia completo e tradução.'}
         canonicalPath="/tutoriais"
+        keywords={[
+          'como instalar mods ddlc',
+          'como instalar mods ddlc pc',
+          'como instalar mods ddlc celular android',
+          'como colocar mods no doki doki literature club',
+          'guia traducao ddlc',
+          'tutoriais ddlc',
+          'doki doki translate company guias'
+        ]}
+        structuredData={[
+          {
+            '@context': 'https://schema.org',
+            '@type': 'TechArticle',
+            headline: currentArticle ? currentArticle.title : 'Central de Guias e Instalação de Mods de DDLC',
+            description: currentArticle ? `Tutorial passo a passo: ${currentArticle.title}` : 'Tutoriais de instalação e configuração de mods de DDLC',
+            inLanguage: 'pt-BR',
+          },
+          {
+            '@context': 'https://schema.org',
+            '@type': 'BreadcrumbList',
+            itemListElement: [
+              {
+                '@type': 'ListItem',
+                position: 1,
+                name: 'Home',
+                item: 'https://doki-doki-translate-company.vercel.app/',
+              },
+              {
+                '@type': 'ListItem',
+                position: 2,
+                name: 'Tutoriais e Guias',
+                item: 'https://doki-doki-translate-company.vercel.app/tutoriais',
+              },
+            ],
+          }
+        ]}
       />
 
       {/* Reading progress bar */}
