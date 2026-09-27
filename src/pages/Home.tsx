@@ -4,7 +4,7 @@ import type { Mod } from '../types/mod';
 import modsDataRaw from '../data/mods.json';
 import { Heart, Clock, Grid as GridIcon, Eye, ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Seo } from '../components/Seo';
-import { SITE_ALTERNATE_NAME, SITE_DESCRIPTION, SITE_NAME, SITE_URL } from '../lib/site';
+import { SITE_ALTERNATE_NAME, SITE_NAME, SITE_URL } from '../lib/site';
 
 
 const modsData: Mod[] = modsDataRaw as Mod[];
